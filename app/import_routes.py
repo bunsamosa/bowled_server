@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from apis import team, game
+from apis import team, game, create
 
 
 def import_routes(app: FastAPI) -> None:
@@ -8,3 +8,4 @@ def import_routes(app: FastAPI) -> None:
     """
     app.include_router(team.router)
     app.include_router(game.router)
+    app.include_router(create.router)
