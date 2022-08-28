@@ -79,11 +79,12 @@ class TeamBuilder:
         self.__team_id = team_name
 
         self.__players = (
-            [{"player_type": "batter"}] * 5
-            + [{"player_type": "wicket-keeper"}] * 2
-            + [{"player_type": "allrounder"}] * 3
-            + [{"player_type": "bowler"}] * 5
+            [{"player_type": "batter"} for i in range(5)]
+            + [{"player_type": "wicket-keeper"} for i in range(2)]
+            + [{"player_type": "allrounder"} for i in range(3)]
+            + [{"player_type": "bowler"} for i in range(5)]
         )
+
         for i, player in enumerate(self.__players):
             self.__players[i] = self.get_new_player(player)
 
@@ -95,8 +96,17 @@ class TeamBuilder:
         # print(n)
         # name_line = next((x for i, x in enumerate(self.__reader) if i == n), None)
         # print(name_line)
+        try:
+            name_arr = self.__name_lines[n].split(",")[0].split(" ")
 
-        player["player_name"] = self.__name_lines[n].split(",")[0]
+            if len(name_arr) >= 2:
+                name = " ".join([name_arr[0], name_arr[1]])
+            else:
+                name = "".join(name_arr)
+        except Exception:
+            name = "Bot"
+
+        player["player_name"] = name.title()
         player["country"] = "India"
         max_dob_ts = 1540660212998
         min_dob_ts = 1492276332458
