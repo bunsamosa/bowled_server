@@ -31,7 +31,7 @@ class GameEngine:
         else:
             self.__batting_team = team2
             self.__bowling_team = team1
-        
+
         self.__delivery_outcomes = ['0', '1', '2', '3', '4', '6', 'W', 'Wd']
         self.__striker = None
         self.__non_striker = None
@@ -60,7 +60,7 @@ class GameEngine:
         # for i in range(10):
         #     if sum(self.__batsman_ratings_prob[i]) != 1.0 or sum(self.__bowler_ratings_prob[i]) != 1.0:
         #         print(i, sum(self.__batsman_ratings_prob[i]), sum(self.__bowler_ratings_prob[i]))
-        
+
 
         self.start_inings()
 
@@ -76,7 +76,7 @@ class GameEngine:
                 self.game_results['winner'] = self.game_results['innings2']['batting_team_name']
 
         print(self.game_results)
-    
+
 
     def start_inings(self):
         self.__total_overs = 20
@@ -149,12 +149,12 @@ class GameEngine:
         if self.__innings_number < 2:
             self.__batting_team, self.__bowling_team = self.__bowling_team, self.__batting_team
             self.start_inings()
-            
-            
+
+
             # Check draw
 
     def play_over(self):
-        
+
         while self.__current_ball <= 5 and self.__current_wicket < 10:
 
             self.play_ball()
@@ -163,7 +163,7 @@ class GameEngine:
                     break
             if self.__current_wicket >= 10:
                 break
-            
+
         self.__current_over += 1
         self.__current_bowler = self.__bowling_team['bowling_lineup'][self.__current_over % self.__bowlers_count]
         print('\nCurrent score:')
@@ -177,7 +177,7 @@ class GameEngine:
             batting_prob = self.__striker['batting_prob'] = self.__batsman_ratings_prob[self.__striker['batting_rating'] -1]
         else:
             batting_prob = self.__striker['batting_prob']
-        
+
         if not 'bowling_prob' in self.__current_bowler:
             bowling_prob = self.__current_bowler['bowling_prob'] = self.__bowler_ratings_prob[self.__current_bowler['bowling_rating'] -1]
         else:
@@ -248,7 +248,7 @@ class GameEngine:
 
         else:
             self.__current_scores['runs'].append(0)
-            
+
         # print('outcome',outcome, self.__striker['player_name'], self.__non_striker['player_name'])
         # except Exception as e:
         #     print(self.__current_innings, str(e))
@@ -263,94 +263,94 @@ class GameEngine:
 
 
 
-team1 = {
-    'team_id': 'a',
-    'team_name': 'RCB',
-    'batting_lineup': [
-        {
-            "player_name":"Kohli",
-            "batting_rating": 1,
-            "bowling_rating": 2,
-            "team_name":"RCB"
-        },
-        {
-            "player_name":"Raina",
-            "batting_rating": 1,
-            "bowling_rating": 1,
-            "team_name":"RCB"
-        },
-        {
-            "player_name":"Rahul",
-            "batting_rating": 2,
-            "bowling_rating": 2,
-            "team_name":"RCB"
-        }
-    ],
-    'bowling_lineup': [
-        {
-            "player_name":"Kohli",
-            "batting_rating": 1,
-            "bowling_rating": 2,
-            "team_name":"RCB"
-        },
-        {
-            "player_name":"Raina",
-            "batting_rating": 1,
-            "bowling_rating": 1,
-            "team_name":"RCB"
-        },
-        {
-            "player_name":"Rahul",
-            "batting_rating": 2,
-            "bowling_rating": 2,
-            "team_name":"RCB"
-        }
-    ],
-}
+# team1 = {
+#     'team_id': 'a',
+#     'team_name': 'RCB',
+#     'batting_lineup': [
+#         {
+#             "player_name":"Kohli",
+#             "batting_rating": 1,
+#             "bowling_rating": 2,
+#             "team_name":"RCB"
+#         },
+#         {
+#             "player_name":"Raina",
+#             "batting_rating": 1,
+#             "bowling_rating": 1,
+#             "team_name":"RCB"
+#         },
+#         {
+#             "player_name":"Rahul",
+#             "batting_rating": 2,
+#             "bowling_rating": 2,
+#             "team_name":"RCB"
+#         }
+#     ],
+#     'bowling_lineup': [
+#         {
+#             "player_name":"Kohli",
+#             "batting_rating": 1,
+#             "bowling_rating": 2,
+#             "team_name":"RCB"
+#         },
+#         {
+#             "player_name":"Raina",
+#             "batting_rating": 1,
+#             "bowling_rating": 1,
+#             "team_name":"RCB"
+#         },
+#         {
+#             "player_name":"Rahul",
+#             "batting_rating": 2,
+#             "bowling_rating": 2,
+#             "team_name":"RCB"
+#         }
+#     ],
+# }
 
-team2 = {
-    'team_id': 'b',
-    "team_name":"CSK",
- 'batting_lineup': [
-        {
-            "player_name":"Dhoni",
-            "batting_rating": 1,
-            "bowling_rating": 1,
-            "team_name":"CSK"
-        },
-        {
-            "player_name":"Dhawan",
-            "batting_rating": 1,
-            "bowling_rating": 2,
-            "team_name":"CSK"
-        },
-        {
-            "player_name":"Rahane",
-            "batting_rating": 2,
-            "bowling_rating": 1,
-            "team_name":"CSK"
-        }
-    ],
-    'bowling_lineup': [
-        {
-            "player_name":"Dhoni",
-            "batting_rating": 1,
-            "bowling_rating": 1,
-            "team_name":"CSK"
-        },
-        {
-            "player_name":"Dhawan",
-            "batting_rating": 1,
-            "bowling_rating": 2,
-            "team_name":"CSK"
-        },
-        {
-            "player_name":"Rahane",
-            "batting_rating": 2,
-            "bowling_rating": 1,
-            "team_name":"CSK"
-        }
-    ]
-}
+# team2 = {
+#     'team_id': 'b',
+#     "team_name":"CSK",
+#  'batting_lineup': [
+#         {
+#             "player_name":"Dhoni",
+#             "batting_rating": 1,
+#             "bowling_rating": 1,
+#             "team_name":"CSK"
+#         },
+#         {
+#             "player_name":"Dhawan",
+#             "batting_rating": 1,
+#             "bowling_rating": 2,
+#             "team_name":"CSK"
+#         },
+#         {
+#             "player_name":"Rahane",
+#             "batting_rating": 2,
+#             "bowling_rating": 1,
+#             "team_name":"CSK"
+#         }
+#     ],
+#     'bowling_lineup': [
+#         {
+#             "player_name":"Dhoni",
+#             "batting_rating": 1,
+#             "bowling_rating": 1,
+#             "team_name":"CSK"
+#         },
+#         {
+#             "player_name":"Dhawan",
+#             "batting_rating": 1,
+#             "bowling_rating": 2,
+#             "team_name":"CSK"
+#         },
+#         {
+#             "player_name":"Rahane",
+#             "batting_rating": 2,
+#             "bowling_rating": 1,
+#             "team_name":"CSK"
+#         }
+#     ]
+# }
 
 # gg = GameEngine('id', team1, team2, team1['team_id'])
