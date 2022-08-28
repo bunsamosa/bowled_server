@@ -1,0 +1,59 @@
+[tool.poetry]
+name = "maze_backend"
+version = "0.1.0"
+description = ""
+authors = ["madhukar01 <mholla8@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+fastapi = "^0.77.1"
+uvicorn = {extras = ["standard"], version = "^0.17.6"}
+gunicorn = "^20.1.0"
+black = "^22.3.0"
+isort = "^5.10.1"
+pylint = "^2.13.8"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 120
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | \.env
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+[tool.pylint.MESSAGE_CONTROL]
+disable = """
+    line-too-long,
+    abstract-method,
+    no-member,
+    c-extension-no-member,
+    logging-fstring-interpolation,
+    broad-except,
+    pointless-statement,
+"""
+enable = "useless-suppression"
+
+[tool.pylint.REPORTS]
+reports="no"
+
+[tool.pylint.FORMAT]
+max-line-length="120"
+
+[tool.pylint.BASIC]
+good-names = "_,setUp,tearDown,maxDiff"

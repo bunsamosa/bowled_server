@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+
+  api-server:
+    container_name: api-server
+    build:
+      context: ""
+      dockerfile: ./deployment/rest_server/Dockerfile
+    image: api-server:latest
+    restart: unless-stopped
+    ports:
+      - 5000:5000
