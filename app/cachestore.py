@@ -5,7 +5,7 @@ from pottery import RedisDict
 
 
 # Read redis host from env
-REDIS_HOST = "redis://127.0.0.1:6379/0"
+REDIS_HOST = "redis://redis-server:6379/0"
 
 
 class CacheStore:
