@@ -136,3 +136,5 @@ dmypy.json
 
 # Tokens
 *.token
+
+redis-data/
