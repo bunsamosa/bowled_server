@@ -116,12 +116,14 @@ class GameEngine:
         if self.__striker["balls_faced"] == 0:
             self.__striker["strike_rate"] = 0
         else:
-            self.__striker["strike_rate"] = self.__striker["runs"] * 100 / self.__striker["balls_faced"]
+            self.__striker["strike_rate"] = round(self.__striker["runs"] * 100 / self.__striker["balls_faced"], 1)
 
         if self.__non_striker["balls_faced"] == 0:
             self.__non_striker["strike_rate"] = 0
         else:
-            self.__striker["strike_rate"] = self.__non_striker["runs"] * 100 / self.__non_striker["balls_faced"]
+            self.__non_striker["strike_rate"] = round(
+                self.__non_striker["runs"] * 100 / self.__non_striker["balls_faced"], 1
+            )
 
         self.__current_innings["player_scores"].append(self.__striker)
         self.__current_innings["player_scores"].append(self.__non_striker)
@@ -231,7 +233,7 @@ class GameEngine:
             if self.__striker["balls_faced"] == 0:
                 self.__striker["strike_rate"] = 0
             else:
-                self.__striker["strike_rate"] = self.__striker["runs"] * 100 / self.__striker["balls_faced"]
+                self.__striker["strike_rate"] = round(self.__striker["runs"] * 100 / self.__striker["balls_faced"], 1)
 
             # self.__striker['wicket_by'] = self.__current_bowler
             self.__current_innings["player_scores"].append(self.__striker)
