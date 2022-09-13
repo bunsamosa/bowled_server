@@ -1,8 +1,9 @@
+from app.import_routes import import_routes
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.import_routes import import_routes
-from app.cachestore import CacheStore
+from sdk.cachestore import CacheStore
+
 
 # Create fastAPI app
 app = FastAPI()
@@ -13,7 +14,7 @@ app = FastAPI()
 ###############################################################################
 @app.on_event("startup")
 async def startup_event() -> None:
-    app.cachestore = CacheStore(namespace="stumped")
+    app.cachestore = CacheStore(namespace="rest_server")
     import_routes(app)
 
 
