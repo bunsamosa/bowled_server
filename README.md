@@ -1,2 +1,2 @@
-# backend_template
-Template repo for FastAPI backend
+# Bowled backend
+Backend server for bowled
