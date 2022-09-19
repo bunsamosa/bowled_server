@@ -135,5 +135,8 @@ dmypy.json
 # Tokens
 *.token
 
-# Redis data
-redis_data/
+# Deployment files
+deployment/
+volumes/
+.env
+docker*
