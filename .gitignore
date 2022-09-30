@@ -134,9 +134,3 @@ dmypy.json
 
 # Tokens
 *.token
-
-# Deployment files
-deployment/
-volumes/
-.env
-docker*
