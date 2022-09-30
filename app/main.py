@@ -5,8 +5,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 
-from sdk.cachestore import CacheStore
-from sdk.logger import initialize_logger
+from lib.core.cachestore import CacheStore
+from lib.core.logger import initialize_logger
 
 
 # Create fastAPI app
