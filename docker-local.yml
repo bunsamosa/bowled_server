@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+  bowled-redis:
+    container_name: bowled-redis
+    image: redis:alpine
+    restart: unless-stopped
+    ports:
+      - 6379
+    volumes:
+      - ./deployment/volumes/redis:/data
