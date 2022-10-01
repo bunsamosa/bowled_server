@@ -15,7 +15,10 @@
                 "9009",
                 "--reload"
             ],
-            "jinja": false
+            "jinja": false,
+            "env": {
+                "DOPPLER_ENV": "1"
+            }
         }
     ]
 }

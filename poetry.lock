@@ -119,6 +119,20 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "doppler-env"
+version = "0.3.0"
+description = "Inject Doppler secrets as environment variables into your Python application during local development with debugging support for PyCharm and Visual Studio Code."
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+python-dotenv = "*"
+
+[package.extras]
+dev = ["check-manifest"]
+
+[[package]]
 name = "fastapi"
 version = "0.83.0"
 description = "FastAPI framework, high performance, easy to learn, fast to code, ready for production"
@@ -549,7 +563,7 @@ python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "3.9.10"
-content-hash = "14ee30148ba63b03a6be81ba10cb4a0e945cac74c91aef25726af540d5df3fd8"
+content-hash = "c2047afdaa679695ba5235eda062489e91a27a4a1e8c3e4d7a3bb1a2ad46590c"
 
 [metadata.files]
 anyio = []
@@ -568,6 +582,7 @@ deprecated = [
 ]
 dill = []
 distlib = []
+doppler-env = []
 fastapi = []
 filelock = []
 gunicorn = [
