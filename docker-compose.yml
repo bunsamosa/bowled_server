@@ -19,8 +19,10 @@ services:
   bowled-redis:
     container_name: bowled-redis
     image: redis:alpine
+    command:
+      - "-- requirepass ${REDIS_PASSWORD}"
     restart: unless-stopped
     ports:
-      - 6379
+      - 6001:6379
     volumes:
       - ./deployment/volumes/redis:/data
