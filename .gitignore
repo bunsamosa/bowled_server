@@ -133,3 +133,6 @@ dmypy.json
 
 # Tokens
 *.token
+
+# DB files
+*.rdb

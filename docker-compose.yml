@@ -11,6 +11,8 @@ services:
     depends_on:
       - bowled-redis
     restart: unless-stopped
+    ports:
+      - 6000:5000
     environment:
       - REDIS_HOST
 
