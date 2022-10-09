@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 
-from lib.core.cachestore import CacheStore
+from lib.core.cache_store import CacheStore
 from lib.core.logger import initialize_logger
 
 
@@ -34,7 +34,8 @@ async def startup_event() -> None:
     Initialize modules and attach them to app
     """
     # cachestore
-    app.cachestore = CacheStore(namespace="rest_server")
+    app.cache_store = CacheStore(namespace="rest_server")
+    app.secret_store = CacheStore(namespace="secrets")
 
     # logger
     initialize_logger()

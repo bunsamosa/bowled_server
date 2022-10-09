@@ -32,10 +32,10 @@ class CacheStore:
         self.__namespace = namespace
 
         # Check if client is connected to redis
-        if redis_client.ping():
-            self.__client: redis.Redis = redis_client
-        else:
+        if not redis_client.ping():
             raise Exception("Unable to connect to redis")
+
+        self.__client: redis.Redis = redis_client
 
     def is_connected(self) -> bool:
         """
