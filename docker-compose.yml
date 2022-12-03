@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+
+  bowled-api:
+    container_name: bowled-api
+    build:
+      context: ""
+      dockerfile: ./deployment/rest_server/Dockerfile
+    image: bowled-api:latest
+    depends_on:
+      - bowled-redis
+    restart: unless-stopped
+    ports:
+      - 6000:5000
+    environment:
+      - REDIS_HOST
+
+  bowled-redis:
+    container_name: bowled-redis
+    image: redis:alpine
+    command:
+      - "-- requirepass ${REDIS_PASSWORD}"
+    restart: unless-stopped
+    ports:
+      - 6001:6379
+    volumes:
+      - ./deployment/volumes/redis:/data
