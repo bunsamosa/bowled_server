@@ -4,9 +4,9 @@ from typing import Union
 from fastapi import APIRouter
 from fastapi import HTTPException
 from fastapi import Request
-from rest_server.user.api_schema import User
 
 from lib.core.auth_bearer import handler
+from rest_server.user.api_schema import User
 
 # Create FastAPI router
 router = APIRouter()
@@ -34,6 +34,7 @@ async def get_user(
     # Check if the user exists
     address_key = f"user_address_{user_id}"
     user_address = cache_store.get_key(address_key)
+
     if not user_address:
         return response
     else:
