@@ -16,3 +16,4 @@ class GetUserResponse(BaseModel):
     user_id: Optional[str] = Field(description="User ID")
     manager_name: Optional[str] = Field(description="Team manager name")
     team_name: Optional[str] = Field(description="Team name")
+    ens_address: Optional[str] = Field(description="ENS address of the team")

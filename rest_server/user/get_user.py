@@ -32,10 +32,17 @@ async def get_user(
     response = GetUserResponse()
 
     # Check if the user exists
-    key = f"user_id_{user_id}"
-    user_address = cache_store.get_key(key)
+    address_key = f"user_address_{user_id}"
+    user_address = cache_store.get_dictionary(address_key)
     if not user_address:
         return response
 
-    # TODO: Create user
+    # fetch user data if user exists
+    data_key = f"user_data_{user_address}"
+    user_data = cache_store.get_dictionary(data_key)
+    response.user_id = user_address
+    response.manager_name = user_data.get("manager_name")
+    response.team_name = user_data.get("team_name")
+    response.signup_complete = True
+
     return response
