@@ -1,10 +1,12 @@
+import json
+
 import structlog
-from app.import_routes import import_routes
-from app.middlewares import log_request
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 
+from app.import_routes import import_routes
+from app.middlewares import log_request
 from lib.core.cache_store import CacheStore
 from lib.core.logger import initialize_logger
 
@@ -36,6 +38,10 @@ async def startup_event() -> None:
     # cachestore
     app.cache_store = CacheStore(namespace="rest_server")
     app.secret_store = CacheStore(namespace="secrets")
+
+    # load player names in memory
+    with open("lib/utils/final_names.json", encoding="UTF-8") as f:
+        app.player_names = json.load(f)
 
     # logger
     initialize_logger()

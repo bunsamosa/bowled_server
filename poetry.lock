@@ -683,6 +683,14 @@ optional = false
 python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,!=3.6.*"
 
 [[package]]
+name = "numpy"
+version = "1.23.5"
+description = "NumPy is the fundamental package for array computing with Python."
+category = "main"
+optional = false
+python-versions = ">=3.8"
+
+[[package]]
 name = "packaging"
 version = "21.3"
 description = "Core utilities for Python packages"
@@ -1270,7 +1278,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "3.9.10"
-content-hash = "fa1378a3df81b53d32aa180c017c190e455284680a5a9da0aa843792a300210d"
+content-hash = "066ff4f3ad5979f99b3eff7ea95ac0e4f59250d5fde5b10d299e23088a669542"
 
 [metadata.files]
 aiohttp = []
@@ -1473,6 +1481,7 @@ mypy-extensions = [
 ]
 netaddr = []
 nodeenv = []
+numpy = []
 packaging = [
     {file = "packaging-21.3-py3-none-any.whl", hash = "sha256:ef103e05f519cdc783ae24ea4e2e0f508a9c99b2d4969652eed6a2e1ea5bd522"},
     {file = "packaging-21.3.tar.gz", hash = "sha256:dd47c42927d89ab911e606518907cc2d3a1f38bbd026385970643f9c5b8ecfeb"},
