@@ -2,6 +2,7 @@ import os
 from typing import Optional
 
 import redis
+from pottery import NextId
 from pottery import RedisDict
 
 
@@ -125,3 +126,18 @@ class CacheStore:
         key = f"{self.__namespace}_{key}"
         value = RedisDict(key=key, redis=self.__client)
         return value
+
+    def get_id_generator(self, key: str):
+        """
+        Get a unique ID generator
+        """
+        if not isinstance(key, str):
+            raise Exception("Invalid key")
+
+        key = key.strip()
+        if not key:
+            raise Exception("Invalid key")
+
+        # Attach namespace to key
+        key = f"{self.__namespace}_{key}"
+        return NextId(key=key, masters={self.__client})
