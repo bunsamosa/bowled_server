@@ -4,7 +4,16 @@ from pydantic import BaseModel
 from pydantic import Field
 
 
-class GetUserResponse(BaseModel):
+class CreateUser(BaseModel):
+    """
+    JSON Schema for creating a user
+    """
+
+    manager_name: str = Field(description="Team manager name", min_length=3)
+    team_name: str = Field(description="Team name", min_length=3)
+
+
+class User(BaseModel):
     """
     JSON Schema for fetching User
     """
