@@ -49,7 +49,8 @@ class JWTBearer(HTTPBearer):
                 algorithms=JWT_ALGORITHM,
                 audience=JWT_AUDIENCE,
             )
-        except Exception:
+        except Exception as exc:
+            print(exc)  # TODO: Add logging
             user_metadata = {}
 
         if not user_metadata:
