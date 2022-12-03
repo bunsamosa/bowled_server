@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import List
 from typing import Union
 
 from fastapi import APIRouter
@@ -12,11 +12,11 @@ from lib.utils.player_generator import generate_players
 router = APIRouter(prefix="/team")
 
 
-@router.get(path="/players", response_model=Dict, tags=["Team"])
+@router.get(path="/players", response_model=List, tags=["Team"])
 async def get_players(
     request: Request,
     user=handler,
-) -> Union[Dict, HTTPException]:
+) -> Union[List, HTTPException]:
     """
     Get players API
     """
@@ -49,4 +49,4 @@ async def get_players(
             id_gen=id_gen,
         )
 
-    return players
+    return tuple(players.values())
