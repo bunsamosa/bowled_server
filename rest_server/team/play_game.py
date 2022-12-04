@@ -31,12 +31,9 @@ async def play_game(
         raise HTTPException(status_code=401)
 
     # Check if the user exists
-    address_key = f"user_address_{user_id}"
-    user_address = cache_store.get_key(address_key)
+    user_address = request.app.address_mapping.get(user_id)
     if not user_address:
         raise HTTPException(status_code=403)
-    else:
-        user_address = str(user_address, encoding="UTF-8")
 
     # Fetch player from users team
     data_key = f"user_data_{user_address}"
@@ -57,5 +54,6 @@ async def play_game(
         team1=tuple(team1.values()),
         team2=tuple(bot_players.values()),
     )
-
+    game_results["team_name"] = user_data["team_name"]
+    game_results["enemy_team"] = "BOT Army"
     return game_results

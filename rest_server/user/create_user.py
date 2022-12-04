@@ -6,10 +6,10 @@ from fastapi import HTTPException
 from fastapi import Request
 from hdwallet.hdwallet import HDWallet
 from hdwallet.utils import generate_mnemonic
-from rest_server.user.api_schema import CreateUser
-from rest_server.user.api_schema import User
 
 from lib.core.auth_bearer import handler
+from rest_server.user.api_schema import CreateUser
+from rest_server.user.api_schema import User
 
 # Create FastAPI router
 router = APIRouter()
@@ -36,8 +36,7 @@ async def create_user(
     response = User()
 
     # Check if the user exists
-    address_key = f"user_address_{user_id}"
-    user_address = cache_store.get_key(address_key)
+    user_address = request.app.address_mapping.get(user_id)
 
     # If not create a new user from mnemonic
     if not user_address:
@@ -46,7 +45,7 @@ async def create_user(
         private_key = wallet.private_key()
 
         user_address = f"0x{wallet.hash()}"
-        cache_store.set_key(key=address_key, value=user_address)
+        request.app.address_mapping[user_id] = user_address
 
         data_key = f"user_data_{user_address}"
         user_data = cache_store.get_dictionary(data_key)
@@ -54,8 +53,6 @@ async def create_user(
         user_data["team_name"] = data.team_name
         user_data["mnemonic"] = mnemonic
         user_data["private_key"] = private_key
-    else:
-        user_address = str(user_address, encoding="UTF-8")
 
     # if user already exists, return existing user data
     data_key = f"user_data_{user_address}"

@@ -30,12 +30,9 @@ async def get_players(
         raise HTTPException(status_code=401)
 
     # Check if the user exists
-    address_key = f"user_address_{user_id}"
-    user_address = cache_store.get_key(address_key)
+    user_address = request.app.address_mapping.get(user_id)
     if not user_address:
         raise HTTPException(status_code=403)
-    else:
-        user_address = str(user_address, encoding="UTF-8")
 
     # fetch players if exists, else generate and render players
     data_key = f"user_data_{user_address}"
@@ -48,6 +45,6 @@ async def get_players(
             names=request.app.player_names,
             id_gen=id_gen,
         )
-        user_data[players] = players
+        user_data["players"] = players
 
     return tuple(players.values())
