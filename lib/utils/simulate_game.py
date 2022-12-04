@@ -56,8 +56,15 @@ def simulate_game(team1, team2):
         player["runs"] = 0
         player["out"] = False
 
+    bowling_lineup = []
+    for player in team2:
+        if player["player_type"] in ("bowler", "all-rounder"):
+            bowling_lineup.append(player)
+
+    total_bowlers = len(bowling_lineup)
+
     batting_team = team1
-    bowling_team = team2
+    bowling_team = bowling_lineup
 
     striker_index = 0
     non_striker_index = 1
@@ -76,8 +83,8 @@ def simulate_game(team1, team2):
         over_ball = current_ball % 6
 
         # bowler and batsman profiles
-        striker = team1[striker_index]
-        bowler = team2[bowler_index]
+        striker = batting_team[striker_index]
+        bowler = bowling_lineup[bowler_index]
 
         # Fetch batsman and bower probability based on rating out of 10
         bowler_rating = bowler["bowling_rating"] - 1
@@ -138,6 +145,7 @@ def simulate_game(team1, team2):
         elif outcome_label == "Triple":
             striker["runs"] += 3
             current_score += 3
+            striker_index, non_striker_index = non_striker_index, striker_index
 
         # double
         elif outcome_label == "Double":
@@ -148,6 +156,7 @@ def simulate_game(team1, team2):
         elif outcome_label == "Single":
             striker["runs"] += 1
             current_score += 1
+            striker_index, non_striker_index = non_striker_index, striker_index
 
         # Next batsman if out
         if batsman_out:
@@ -160,6 +169,8 @@ def simulate_game(team1, team2):
             striker_index, non_striker_index = non_striker_index, striker_index
             print_over_ball = 6
             print_current_over = current_over - 1
+            bowler_index += 1
+            bowler_index = bowler_index % total_bowlers
         else:
             print_over_ball = over_ball
             print_current_over = current_over
@@ -182,9 +193,9 @@ def simulate_game(team1, team2):
                 "current_wickets": current_wickets,
                 "outcome": outcome,
                 "outcome_label": outcome_label,
-                "striker_name": striker["player_name"],
+                "striker": striker,
                 "striker_rating": batsman_rating,
-                "bowler_name": bowler["player_name"],
+                "bowler": bowler,
                 "bowler_rating": bowler_rating,
                 "over_score": list(over_score),
                 "innings_over": False,
@@ -199,7 +210,8 @@ def simulate_game(team1, team2):
     first_innings = {
         "wickets": current_wickets,
         "score": current_score,
-        "balls": current_ball,
+        "current_over": print_current_over,
+        "current_ball": print_over_ball,
         "batting_team": batting_team,
         "bowling_team": bowling_team,
     }
@@ -213,9 +225,9 @@ def simulate_game(team1, team2):
             "current_wickets": current_wickets,
             "outcome": outcome,
             "outcome_label": outcome_label,
-            "striker_name": striker["player_name"],
+            "striker": striker,
             "striker_rating": batsman_rating,
-            "bowler_name": bowler["player_name"],
+            "bowler": bowler,
             "bowler_rating": bowler_rating,
             "over_score": list(over_score),
             "innings_over": True,
@@ -233,8 +245,14 @@ def simulate_game(team1, team2):
         player["runs"] = 0
         player["out"] = False
 
+    bowling_lineup = []
+    for player in team1:
+        if player["player_type"] in ("bowler", "all-rounder"):
+            bowling_lineup.append(player)
+
+    total_bowlers = len(bowling_lineup)
     batting_team = team2
-    bowling_team = team1
+    bowling_team = bowling_lineup
 
     striker_index = 0
     non_striker_index = 1
@@ -257,8 +275,8 @@ def simulate_game(team1, team2):
         over_ball = current_ball % 6
 
         # bowler and batsman profiles
-        striker = team1[striker_index]
-        bowler = team2[bowler_index]
+        striker = batting_team[striker_index]
+        bowler = bowling_lineup[bowler_index]
 
         # Fetch batsman and bower probability based on rating out of 10
         bowler_rating = bowler["bowling_rating"] - 1
@@ -319,6 +337,7 @@ def simulate_game(team1, team2):
         elif outcome_label == "Triple":
             striker["runs"] += 3
             current_score += 3
+            striker_index, non_striker_index = non_striker_index, striker_index
 
         # double
         elif outcome_label == "Double":
@@ -329,6 +348,7 @@ def simulate_game(team1, team2):
         elif outcome_label == "Single":
             striker["runs"] += 1
             current_score += 1
+            striker_index, non_striker_index = non_striker_index, striker_index
 
         # Next batsman if out
         if batsman_out:
@@ -339,6 +359,8 @@ def simulate_game(team1, team2):
         # Swap strikers at the end of the over
         if over_ball == 0:
             striker_index, non_striker_index = non_striker_index, striker_index
+            bowler_index += 1
+            bowler_index = bowler_index % total_bowlers
             print_over_ball = 6
             print_current_over = current_over - 1
         else:
@@ -363,9 +385,9 @@ def simulate_game(team1, team2):
                 "current_wickets": current_wickets,
                 "outcome": outcome,
                 "outcome_label": outcome_label,
-                "striker_name": striker["player_name"],
+                "striker": striker,
                 "striker_rating": batsman_rating,
-                "bowler_name": bowler["player_name"],
+                "bowler": bowler,
                 "bowler_rating": bowler_rating,
                 "over_score": list(over_score),
                 "innings_over": False,
@@ -381,7 +403,8 @@ def simulate_game(team1, team2):
     second_innings = {
         "wickets": current_wickets,
         "score": current_score,
-        "balls": current_ball,
+        "current_over": print_current_over,
+        "current_ball": print_over_ball,
         "batting_team": batting_team,
         "bowling_team": bowling_team,
     }
@@ -394,9 +417,9 @@ def simulate_game(team1, team2):
             "current_wickets": current_wickets,
             "outcome": outcome,
             "outcome_label": outcome_label,
-            "striker_name": striker["player_name"],
+            "striker": striker,
             "striker_rating": batsman_rating,
-            "bowler_name": bowler["player_name"],
+            "bowler": bowler,
             "bowler_rating": bowler_rating,
             "over_score": list(over_score),
             "innings_over": True,
