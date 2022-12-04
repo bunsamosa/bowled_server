@@ -32,13 +32,10 @@ async def get_user(
     response = User()
 
     # Check if the user exists
-    address_key = f"user_address_{user_id}"
-    user_address = cache_store.get_key(address_key)
+    user_address = request.app.address_mapping.get(user_id)
 
     if not user_address:
         return response
-    else:
-        user_address = str(user_address, encoding="UTF-8")
 
     # fetch user data if user exists
     data_key = f"user_data_{user_address}"

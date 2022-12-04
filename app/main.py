@@ -38,6 +38,8 @@ async def startup_event() -> None:
     # cachestore
     app.cache_store = CacheStore(namespace="rest_server")
     app.secret_store = CacheStore(namespace="secrets")
+    address_key = "user_address"
+    app.address_mapping = app.cache_store.get_dictionary(address_key)
 
     # load player names in memory
     with open("lib/utils/final_names.json", encoding="UTF-8") as f:
