@@ -38,10 +38,6 @@ async def get_teams(request: Request) -> Union[List, HTTPException]:
             "team_id": "csk",
             "team_logo": "https://static.wikia.nocookie.net/logopedia/images/8/83/Chennai_Super_Kings_logo.svg",
         },
-        "dc": {
-            "team_name": "Delhi Capitals",
-            "team_id": "dc",
-            "team_logo": "https://static.wikia.nocookie.net/logopedia/images/d/d2/Delhi_Capitals.png",
-        },
     }
+    cache_store["live_teams"] = teams
     return tuple(teams.values())
