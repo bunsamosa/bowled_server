@@ -25,23 +25,27 @@ async def play_game(
     await logger.info("Simulate game API")
 
     live_teams = cache_store.get_dictionary(key="live_teams")
+    live_players = cache_store.get_dictionary(key="live_players")
     id_gen = cache_store.get_id_generator(key="players")
-    team1 = generate_players(
-        names=request.app.player_names,
-        id_gen=id_gen,
-    )
+    user_team = live_teams.get(myteam)
+
+    if not user_team:
+        user_team_name = "BOT User"
+        user_players = generate_players(
+            names=request.app.player_names,
+            id_gen=id_gen,
+        )
+    else:
+        user_team = live_teams.get(myteam)
+        user_team_name = user_team["team_name"]
+        user_players = live_players.get(myteam)
 
     # generate bot team to play with
     bot_players = generate_players(names=request.app.player_names)
     game_results = simulate_game(
-        team1=tuple(team1.values()),
+        team1=tuple(user_players.values()),
         team2=tuple(bot_players.values()),
     )
-
-    user_team = live_teams.get(myteam)
-    if not user_team:
-        game_results["team_name"] = "BOT User"
-    else:
-        game_results["team_name"] = user_team["team_name"]
+    game_results["team_name"] = user_team_name
     game_results["enemy_team"] = "BOT Army"
     return game_results

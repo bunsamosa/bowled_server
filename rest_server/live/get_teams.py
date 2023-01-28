@@ -5,6 +5,7 @@ from fastapi import APIRouter
 from fastapi import HTTPException
 from fastapi import Request
 
+from lib.utils.player_generator import generate_players
 
 # Create FastAPI router
 router = APIRouter(prefix="/live")
@@ -39,5 +40,18 @@ async def get_teams(request: Request) -> Union[List, HTTPException]:
             "team_logo": "https://static.wikia.nocookie.net/logopedia/images/8/83/Chennai_Super_Kings_logo.svg",
         },
     }
-    cache_store["live_teams"] = teams
+    live_teams = cache_store.get_dictionary(key="live_teams")
+    live_teams.update(teams)
+
+    id_gen = cache_store.get_id_generator(key="players")
+
+    live_players = cache_store.get_dictionary(key="live_players")
+    for team_id in teams:
+        if team_id not in live_players:
+            team1 = generate_players(
+                names=request.app.player_names,
+                id_gen=id_gen,
+            )
+            live_players[team_id] = team1
+
     return tuple(teams.values())
