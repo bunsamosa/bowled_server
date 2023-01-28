@@ -11,13 +11,13 @@ router = APIRouter(prefix="/live")
 
 
 @router.get(path="/teams", response_model=List, tags=["Team"])
-async def fetch_teams(request: Request) -> Union[List, HTTPException]:
+async def get_teams(request: Request) -> Union[List, HTTPException]:
     """
-    Fetch teams API
+    Get teams API
     """
     cache_store = request.app.cache_store
     logger = request.app.logger
-    await logger.info("Fetch teams API")
+    await logger.info("Get teams API")
 
     # Read available teams data from redis
     # teams = cache_store.get_dictionary("live_teams")

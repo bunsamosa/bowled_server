@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 
+from rest_server.live import get_teams
 from rest_server.monitoring import heartbeat
 from rest_server.monitoring import index
 from rest_server.team import get_players
@@ -29,3 +30,8 @@ def import_routes(app: FastAPI) -> None:
     ###########################################################################
     app.include_router(get_players.router)
     app.include_router(play_game.router)
+
+    ###########################################################################
+    # Live
+    ###########################################################################
+    app.include_router(get_teams.router)
