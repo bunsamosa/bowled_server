@@ -113,7 +113,7 @@ def fill_skill_colors(player):
     )
 
     player["bowling_rating"] = math.ceil(
-        (player["bowling_main_index"] + player["bowling_variation_index"]) / 4
+        (player["bowling_main_index"] + player["bowling_variation_index"]) / 4,
     )
     return player
 
