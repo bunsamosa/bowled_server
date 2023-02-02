@@ -18,6 +18,8 @@ services:
       - JWT_ALGORITHM
       - JWT_SECRET
       - JWT_AUDIENCE
+    volumes:
+      - ./logs:/src/logs
 
   bowled-redis:
     container_name: bowled-redis
