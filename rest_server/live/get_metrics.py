@@ -11,7 +11,10 @@ router = APIRouter(prefix="/live")
 
 
 @router.get(path="/metrics", response_model=Dict, tags=["Live"])
-async def get_teams(request: Request) -> Union[dict, HTTPException]:
+async def get_live_metrics(
+    request: Request,
+    resetlive: bool = False,
+) -> Union[dict, HTTPException]:
     """
     Get metrics API
     """
@@ -21,4 +24,9 @@ async def get_teams(request: Request) -> Union[dict, HTTPException]:
 
     # Read available teams data from redis
     live_metrics = cache_store.get_dictionary("live_metrics")
+
+    # reset live games metrics
+    if resetlive:
+        live_metrics["games_live"] = 0
+
     return live_metrics

@@ -1,7 +1,9 @@
+import asyncio
 from typing import Dict
 from typing import Union
 
 from fastapi import APIRouter
+from fastapi import BackgroundTasks
 from fastapi import HTTPException
 from fastapi import Request
 
@@ -12,10 +14,22 @@ from lib.utils.simulate_game import simulate_game
 router = APIRouter(prefix="/live")
 
 
+async def game_finished(cache_store, logger):
+    # a game has finished, update metrics
+    finish_time = 30 * 60
+    await asyncio.sleep(finish_time)
+
+    live_metrics = cache_store.get_dictionary("live_metrics")
+    if (live_metrics["games_live"]) > 0:
+        live_metrics["games_live"] -= 1
+        await logger.info("Live game finished, updating metrics")
+
+
 @router.get(path="/game", response_model=Dict, tags=["Live"])
 async def play_game(
     request: Request,
     myteam: str,
+    bg_handler: BackgroundTasks,
 ) -> Union[Dict, HTTPException]:
     """
     Simulate game API
@@ -48,4 +62,13 @@ async def play_game(
     )
     game_results["team_name"] = user_team_name
     game_results["enemy_team"] = "BOT Army"
+
+    # update game metrics
+    live_metrics = cache_store.get_dictionary("live_metrics")
+    await logger.info("Live game started, updating metrics")
+    live_metrics["games_played"] += 1
+    live_metrics["games_live"] += 1
+
+    # add a task to the background handler
+    bg_handler.add_task(game_finished, cache_store, logger)
     return game_results
