@@ -4,6 +4,7 @@ from rest_server.live import get_metrics
 from rest_server.live import get_teams
 from rest_server.live import live_game
 from rest_server.live import live_players
+from rest_server.live import update_teams
 from rest_server.monitoring import heartbeat
 from rest_server.monitoring import index
 from rest_server.team import get_players
@@ -41,3 +42,4 @@ def import_routes(app: FastAPI) -> None:
     app.include_router(get_metrics.router)
     app.include_router(live_game.router)
     app.include_router(live_players.router)
+    app.include_router(update_teams.router)
