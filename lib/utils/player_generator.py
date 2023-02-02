@@ -36,10 +36,79 @@ SKILL_LEVELS = (
     "Supreme",
     "Magical",
     "Demigod",
-    "Godlike",
+    "Titan",
 )
 
 PLAYER_FORMS = ("Poor", "Decent", "Good", "Excellent")
+
+SKILL_COLORS = {
+    "1": {"name": "Non-existent", "color": "#D3D0CB"},
+    "2": {"name": "Horrible", "color": "#D3D0CB"},
+    "3": {"name": "Hopeless", "color": "#D3D0CB"},
+    "4": {"name": "Useless", "color": "#D3D0CB"},
+    "5": {"name": "Mediocre", "color": "#FFA500"},
+    "6": {"name": "Average", "color": "#FFA500"},
+    "7": {"name": "Reliable", "color": "#FFA500"},
+    "8": {"name": "Accomplished", "color": "#FFA500"},
+    "9": {"name": "Remarkable", "color": "#3FA34D"},
+    "10": {"name": "Brilliant", "color": "#3FA34D"},
+    "11": {"name": "Exemplary", "color": "#3FA34D"},
+    "12": {"name": "Prodigious", "color": "#3FA34D"},
+    "13": {"name": "Fantastic", "color": "#52489C"},
+    "14": {"name": "Magnificent", "color": "#52489C"},
+    "15": {"name": "Masterful", "color": "#52489C"},
+    "16": {"name": "Legendary", "color": "#52489C"},
+    "17": {"name": "Supreme", "color": "#FF0000"},
+    "18": {"name": "Magical", "color": "#FF0000"},
+    "19": {"name": "Demigod", "color": "#FF0000"},
+    "20": {"name": "Titan", "color": "#FF0000"},
+}
+
+
+def fill_skill_colors(player):
+    """
+    Fill skill names and skill colors for a player
+    Also update the random traits - form and fitness
+    """
+    fielding_index = str(player["fielding_index"])
+    player["fielding"] = SKILL_COLORS[fielding_index]["name"]
+    player["fielding_color"] = SKILL_COLORS[fielding_index]["color"]
+
+    wicket_keeping_index = str(player["wicket_keeping_index"])
+    player["wicket_keeping"] = SKILL_COLORS[wicket_keeping_index]["name"]
+    player["wicket_keeping_color"] = SKILL_COLORS[wicket_keeping_index][
+        "color"
+    ]
+
+    batting_seam_index = str(player["batting_seam_index"])
+    player["batting_seam"] = SKILL_COLORS[batting_seam_index]["name"]
+    player["batting_seam_color"] = SKILL_COLORS[batting_seam_index]["color"]
+
+    batting_spin_index = str(player["batting_spin_index"])
+    player["batting_spin"] = SKILL_COLORS[batting_spin_index]["name"]
+    player["batting_spin_color"] = SKILL_COLORS[batting_spin_index]["color"]
+
+    bowling_main_index = str(player["bowling_main_index"])
+    player["bowling_main"] = SKILL_COLORS[bowling_main_index]["name"]
+    player["bowling_main_color"] = SKILL_COLORS[bowling_main_index]["color"]
+
+    bowling_variation_index = str(player["bowling_variation_index"])
+    player["bowling_variation"] = SKILL_COLORS[bowling_variation_index]["name"]
+    player["bowling_variation_color"] = SKILL_COLORS[bowling_variation_index][
+        "color"
+    ]
+
+    index = np.random.choice(np.arange(0, 4), p=[0.1, 0.4, 0.4, 0.1])
+    player["form"] = PLAYER_FORMS[index]
+
+    index = np.random.choice(np.arange(0, 4), p=[0.1, 0.4, 0.35, 0.15])
+    player["fitness"] = FITNESS_LEVELS[index]
+
+    max_dob_ts = 1540660212998
+    min_dob_ts = 1492276332458
+    player["dob"] = random.randint(min_dob_ts, max_dob_ts)
+
+    return player
 
 
 def fill_player_skills(player):
