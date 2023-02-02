@@ -39,7 +39,6 @@ async def play_game(
     await logger.info("Simulate game API")
 
     live_teams = cache_store.get_dictionary(key="live_teams")
-    live_players = cache_store.get_dictionary(key="live_players")
     id_gen = cache_store.get_id_generator(key="players")
     user_team = live_teams.get(myteam)
 
@@ -50,14 +49,13 @@ async def play_game(
             id_gen=id_gen,
         )
     else:
-        user_team = live_teams.get(myteam)
         user_team_name = user_team["team_name"]
-        user_players = live_players.get(myteam)
+        user_players = user_team["players"]
 
     # generate bot team to play with
     bot_players = generate_players(names=request.app.player_names)
     game_results = simulate_game(
-        team1=tuple(user_players.values()),
+        team1=user_players,
         team2=tuple(bot_players.values()),
     )
     game_results["team_name"] = user_team_name

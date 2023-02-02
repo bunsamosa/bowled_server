@@ -108,6 +108,13 @@ def fill_skill_colors(player):
     min_dob_ts = 1492276332458
     player["dob"] = random.randint(min_dob_ts, max_dob_ts)
 
+    player["batting_rating"] = math.ceil(
+        (player["batting_seam_index"] + player["batting_spin_index"]) / 4,
+    )
+
+    player["bowling_rating"] = math.ceil(
+        (player["bowling_main_index"] + player["bowling_variation_index"]) / 4
+    )
     return player
 
 
