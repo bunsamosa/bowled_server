@@ -63,6 +63,7 @@ async def play_game(
     for player in user_team["players"]:
         player_data[player["player_id"]] = player
 
+    print(player_data)
     for player_id in batting_lineup_id:
         batting_lineup.append(player_data[player_id])
 
@@ -78,7 +79,7 @@ async def play_game(
     if toss == 0:
         game_results = simulate_game(
             team1=batting_lineup,
-            team2=bot_players,
+            team2=tuple(bot_players.values()),
             bowling_team1=bowling_lineup,
         )
         game_results["team_name"] = user_team_name
@@ -86,7 +87,7 @@ async def play_game(
         game_results["toss_result"] = toss_string % user_team_name
     else:
         game_results = simulate_game(
-            team1=bot_players,
+            team1=tuple(bot_players.values()),
             team2=batting_lineup,
             bowling_team2=bowling_lineup,
         )

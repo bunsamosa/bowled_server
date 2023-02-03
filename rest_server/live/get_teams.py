@@ -23,7 +23,7 @@ async def get_teams(request: Request) -> Union[List, HTTPException]:
     response_data = []
     for team_id in teams:
         team_data = teams[team_id]
-        team_data.pop("players")
+        # team_data.pop("players")
         response_data.append(team_data)
 
     return response_data
