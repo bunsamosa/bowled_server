@@ -43,7 +43,7 @@ BOWLER_DISTRIBUTION = [
 TOTAL_OVERS = 20
 
 
-def simulate_game(team1, team2):
+def simulate_game(team1, team2, bowling_team1=None, bowling_team2=None):
     """
     Given 2 teams, simulate a T20 cricket game
     """
@@ -60,6 +60,9 @@ def simulate_game(team1, team2):
     for player in team2:
         if player["player_type"] in ("bowler", "all-rounder"):
             bowling_lineup.append(player)
+
+    if bowling_team2:
+        bowling_lineup = bowling_team2
 
     total_bowlers = len(bowling_lineup)
 
@@ -249,6 +252,9 @@ def simulate_game(team1, team2):
     for player in team1:
         if player["player_type"] in ("bowler", "all-rounder"):
             bowling_lineup.append(player)
+
+    if bowling_team1:
+        bowling_lineup = bowling_team1
 
     total_bowlers = len(bowling_lineup)
     batting_team = team2
