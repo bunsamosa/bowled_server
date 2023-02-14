@@ -238,12 +238,11 @@ def fill_player_skills(player):
 
     # ratings
     player["batting_rating"] = math.ceil(
-        (player["batting_seam_index"] + player["batting_spin_index"]) / 2 + 1,
+        (player["batting_seam_index"] + player["batting_spin_index"]) / 4,
     )
 
     player["bowling_rating"] = math.ceil(
-        (player["bowling_main_index"] + player["bowling_variation_index"]) / 2
-        + 1,
+        (player["bowling_main_index"] + player["bowling_variation_index"]) / 4,
     )
     return player
 
@@ -277,4 +276,3 @@ if __name__ == "__main__":
         player_names = json.load(f)
 
     final_players = generate_players(names=player_names)
-    print(json.dumps(final_players))
