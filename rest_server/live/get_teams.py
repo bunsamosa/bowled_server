@@ -1,29 +1,29 @@
 from typing import List
-from typing import Union
 
 from fastapi import APIRouter
-from fastapi import HTTPException
 from fastapi import Request
+from pypika.terms import Star
+
+from rest_server.data_models import public_teams
+from rest_server.live.api_models import PublicTeam
 
 # Create FastAPI router
 router = APIRouter(prefix="/live")
 
 
-@router.get(path="/teams", response_model=List, tags=["Live"])
-async def get_teams(request: Request) -> Union[List, HTTPException]:
+@router.get(path="/teams", response_model=List[PublicTeam], tags=["Live"])
+async def get_teams(request: Request) -> List[PublicTeam]:
     """
-    Get teams API
+    This API returns a list of public teams
     """
-    cache_store = request.app.cache_store
+    datastore = request.app.data_store
     logger = request.app.logger
-    await logger.info("Get teams API")
+    await logger.info("Get live teams API")
 
-    # Read available teams data from redis
-    teams = cache_store.get_dictionary("live_teams")
-    response_data = []
-    for team_id in teams:
-        team_data = teams[team_id]
-        # team_data.pop("players")
-        response_data.append(team_data)
+    # Fetch teams data from postgres
+    async with datastore.acquire() as connection:
+        data_query = public_teams.select(Star())
+        data_query = data_query.get_sql()
+        teams = await connection.fetch(data_query)
 
-    return response_data
+    return teams
