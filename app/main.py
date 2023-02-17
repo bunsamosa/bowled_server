@@ -8,6 +8,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from app.import_routes import import_routes
 from app.middlewares import log_request
 from lib.core.cache_store import CacheStore
+from lib.core.data_store import get_connection_pool
 from lib.core.logger import initialize_logger
 
 
@@ -37,6 +38,9 @@ async def startup_event() -> None:
     """
     # cachestore
     app.cache_store = CacheStore(namespace="rest_server")
+    app.data_store = await get_connection_pool()
+
+    # TODO delete legacy from here
     app.secret_store = CacheStore(namespace="secrets")
     address_key = "user_address"
     app.address_mapping = app.cache_store.get_dictionary(address_key)
@@ -44,6 +48,7 @@ async def startup_event() -> None:
     # load player names in memory
     with open("lib/utils/final_names.json", encoding="UTF-8") as f:
         app.player_names = json.load(f)
+    # TODO delete till here
 
     # logger
     initialize_logger()

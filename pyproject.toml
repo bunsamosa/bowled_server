@@ -16,6 +16,8 @@ hdwallet = "^2.1.2"
 websockets = "9.1"
 thirdweb-sdk = "^3.0.0"
 numpy = "^1.23.5"
+asyncpg = "^0.27.0"
+PyPika = "^0.48.9"
 
 [tool.poetry.dev-dependencies]
 isort = "^5.10.1"
