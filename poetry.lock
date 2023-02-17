@@ -79,6 +79,19 @@ optional = false
 python-versions = ">=3.6"
 
 [[package]]
+name = "asyncpg"
+version = "0.27.0"
+description = "An asyncio PostgreSQL driver"
+category = "main"
+optional = false
+python-versions = ">=3.7.0"
+
+[package.extras]
+dev = ["Cython (>=0.29.24,<0.30.0)", "pytest (>=6.0)", "Sphinx (>=4.1.2,<4.2.0)", "sphinxcontrib-asyncio (>=0.3.0,<0.4.0)", "sphinx-rtd-theme (>=0.5.2,<0.6.0)", "flake8 (>=5.0.4,<5.1.0)", "uvloop (>=0.15.3)"]
+docs = ["Sphinx (>=4.1.2,<4.2.0)", "sphinxcontrib-asyncio (>=0.3.0,<0.4.0)", "sphinx-rtd-theme (>=0.5.2,<0.6.0)"]
+test = ["flake8 (>=5.0.4,<5.1.0)", "uvloop (>=0.15.3)"]
+
+[[package]]
 name = "attrs"
 version = "22.1.0"
 description = "Classes Without Boilerplate"
@@ -857,6 +870,14 @@ python-versions = ">=3.6.8"
 diagrams = ["railroad-diagrams", "jinja2"]
 
 [[package]]
+name = "pypika"
+version = "0.48.9"
+description = "A SQL query builder API for Python"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "pyrsistent"
 version = "0.19.2"
 description = "Persistent/Functional/Immutable data structures"
@@ -1278,7 +1299,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "3.9.10"
-content-hash = "066ff4f3ad5979f99b3eff7ea95ac0e4f59250d5fde5b10d299e23088a669542"
+content-hash = "188a8fc22ef1bf358333d12af6fffab4e53b23f34ecc2736e80dc5a0cd7f7186"
 
 [metadata.files]
 aiohttp = []
@@ -1287,6 +1308,7 @@ anyio = []
 asgiref = []
 astroid = []
 async-timeout = []
+asyncpg = []
 attrs = []
 base58 = []
 bitarray = []
@@ -1516,6 +1538,9 @@ pyee = []
 pylint = []
 pymerkle = []
 pyparsing = []
+pypika = [
+    {file = "PyPika-0.48.9.tar.gz", hash = "sha256:838836a61747e7c8380cd1b7ff638694b7a7335345d0f559b04b2cd832ad5378"},
+]
 pyrsistent = []
 python-dotenv = []
 python-jose = [
