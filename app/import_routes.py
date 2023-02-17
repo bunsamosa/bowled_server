@@ -8,10 +8,7 @@ from rest_server.live import start_game
 from rest_server.live import update_teams
 from rest_server.monitoring import heartbeat
 from rest_server.monitoring import index
-from rest_server.team import get_players
-from rest_server.team import play_game
-from rest_server.user import create_user
-from rest_server.user import get_user
+from rest_server.system_management import reload_cache
 
 
 def import_routes(app: FastAPI) -> None:
@@ -25,16 +22,9 @@ def import_routes(app: FastAPI) -> None:
     app.include_router(heartbeat.router)
 
     ###########################################################################
-    # User
+    # System management
     ###########################################################################
-    app.include_router(get_user.router)
-    app.include_router(create_user.router)
-
-    ###########################################################################
-    # Team
-    ###########################################################################
-    app.include_router(get_players.router)
-    app.include_router(play_game.router)
+    app.include_router(reload_cache.router)
 
     ###########################################################################
     # Live

@@ -2,9 +2,8 @@ from typing import List
 
 from fastapi import APIRouter
 from fastapi import Request
-from pypika.terms import Star
 
-from rest_server.data_models import public_teams
+from gamelib.team.public_team import get_all_teams
 from rest_server.live.api_models import PublicTeam
 
 # Create FastAPI router
@@ -22,8 +21,9 @@ async def get_teams(request: Request) -> List[PublicTeam]:
 
     # Fetch teams data from postgres
     async with datastore.acquire() as connection:
-        data_query = public_teams.select(Star())
-        data_query = data_query.get_sql()
-        teams = await connection.fetch(data_query)
+        team_data = await get_all_teams(
+            ds_connection=connection,
+            cachestore=None,
+        )
 
-    return teams
+    return team_data
