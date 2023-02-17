@@ -25,16 +25,16 @@ class CacheStore:
 
         # Validate string namespace
         if not isinstance(namespace, str):
-            raise Exception("Invalid namespace")
+            raise ValueError("Invalid namespace")
 
         namespace = namespace.strip()
         if not namespace:
-            raise Exception("Invalid namespace")
+            raise ValueError("Invalid namespace")
         self.__namespace = namespace
 
         # Check if client is connected to redis
         if not redis_client.ping():
-            raise Exception("Unable to connect to redis")
+            raise ConnectionError("Unable to connect to redis")
 
         self.__client: redis.Redis = redis_client
 
@@ -81,12 +81,12 @@ class CacheStore:
             or not isinstance(value, str)
             or not isinstance(expire, int)
         ):
-            raise Exception("Invalid parameter")
+            raise ValueError("Invalid parameter")
 
         key = key.strip()
         value = value.strip()
         if not key or not value or not 0 < expire < 86400:
-            raise Exception("Invalid parameter")
+            raise ValueError("Invalid parameter")
 
         # Attach namespace to key
         key = f"{self.__namespace}_{key}"
@@ -99,11 +99,11 @@ class CacheStore:
         """
         # Validate string key
         if not isinstance(key, str):
-            raise Exception("Invalid key")
+            raise ValueError("Invalid key")
 
         key = key.strip()
         if not key:
-            raise Exception("Invalid key")
+            raise ValueError("Invalid key")
 
         # Attach namespace to key
         key = f"{self.__namespace}_{key}"
@@ -116,11 +116,11 @@ class CacheStore:
         :return: Dictionary for the key
         """
         if not isinstance(key, str):
-            raise Exception("Invalid key")
+            raise ValueError("Invalid key")
 
         key = key.strip()
         if not key:
-            raise Exception("Invalid key")
+            raise ValueError("Invalid key")
 
         # Attach namespace to key
         key = f"{self.__namespace}_{key}"
@@ -132,11 +132,11 @@ class CacheStore:
         Get a unique ID generator
         """
         if not isinstance(key, str):
-            raise Exception("Invalid key")
+            raise ValueError("Invalid key")
 
         key = key.strip()
         if not key:
-            raise Exception("Invalid key")
+            raise ValueError("Invalid key")
 
         # Attach namespace to key
         key = f"{self.__namespace}_{key}"
