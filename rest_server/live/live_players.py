@@ -5,7 +5,7 @@ from fastapi import APIRouter
 from fastapi import HTTPException
 from fastapi import Request
 
-from lib.game.team.public_team import get_players_by_team_id
+from gamelib.team.public_team import get_players_by_team_id
 
 # Create FastAPI router
 router = APIRouter(prefix="/live")

@@ -1,7 +1,7 @@
 from pypika.terms import Star
 
-from lib.game.data_models import attribute_index_labels
-from lib.game.data_models import skill_index_labels
+from gamelib.data_models import attribute_index_labels
+from gamelib.data_models import skill_index_labels
 
 
 async def load_data(ds_connection, cachestore) -> None:
