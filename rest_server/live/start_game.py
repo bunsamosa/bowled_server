@@ -9,6 +9,8 @@ from fastapi import BackgroundTasks
 from fastapi import HTTPException
 from fastapi import Request
 
+from gamelib.team.public_team import get_players_by_team_id
+from gamelib.team.public_team import get_team_by_id
 from lib.utils.player_generator import generate_players
 from lib.utils.simulate_game import simulate_game
 from rest_server.live.api_models import LiveGameInput
@@ -19,7 +21,7 @@ router = APIRouter(prefix="/live")
 
 async def game_finished(cache_store, logger):
     # a game has finished, update metrics
-    finish_time = 30 * 60
+    finish_time = 600
     await asyncio.sleep(finish_time)
 
     live_metrics = cache_store.get_dictionary("live_metrics")
@@ -42,32 +44,38 @@ async def play_game(
     Simulate game API
     """
     cache_store = request.app.cache_store
+    data_store = request.app.data_store
     logger = request.app.logger
     await logger.info("Simulate game API")
 
-    live_teams = cache_store.get_dictionary(key="live_teams")
+    # TODO: Validate input data
 
-    try:
-        myteam = game_input.team_id
-        batting_lineup_id = game_input.batting_lineup
-        bowling_lineup_id = game_input.bowling_lineup
-    except KeyError:
-        return HTTPException(status_code=400, detail="Invalid input")
+    # Fetch team and players data
+    async with data_store.acquire() as connection:
+        user_team = await get_team_by_id(
+            team_id=game_input.team_id,
+            ds_connection=connection,
+            cachestore=cache_store,
+        )
+        user_team_name = user_team["team_name"]
 
-    user_team = live_teams.get(myteam)
-    user_team_name = user_team["team_name"]
+        user_team_players = await get_players_by_team_id(
+            team_id=game_input.team_id,
+            ds_connection=connection,
+            cachestore=cache_store,
+        )
+
     batting_lineup = []
     bowling_lineup = []
 
     player_data = {}
-    for player in user_team["players"]:
+    for player in user_team_players:
         player_data[player["player_id"]] = player
 
-    print(player_data)
-    for player_id in batting_lineup_id:
+    for player_id in game_input.batting_lineup:
         batting_lineup.append(player_data[player_id])
 
-    for player_id in bowling_lineup_id:
+    for player_id in game_input.bowling_lineup:
         bowling_lineup.append(player_data[player_id])
 
     # generate bot team to play with
@@ -98,13 +106,14 @@ async def play_game(
     # update game metrics
     live_metrics = cache_store.get_dictionary("live_metrics")
     await logger.info("Live game started, updating metrics")
+
+    if "games_played" not in live_metrics:
+        live_metrics["games_played"] = 0
+        live_metrics["games_live"] = 0
+
     live_metrics["games_played"] += 1
     live_metrics["games_live"] += 1
-
-    game_id = str(uuid.uuid4())
-    game_results["game_id"] = game_id
-    game_data = cache_store.get_dictionary(game_id)
-    game_data.update(game_results)
+    game_results["game_id"] = str(uuid.uuid4())
 
     # add a task to the background handler
     bg_handler.add_task(game_finished, cache_store, logger)

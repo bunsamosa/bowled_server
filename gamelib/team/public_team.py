@@ -49,3 +49,21 @@ async def get_all_teams(ds_connection, cachestore) -> Tuple[dict]:
     team_data = await ds_connection.fetch(data_query)
 
     return tuple(map(dict, team_data))
+
+
+async def get_team_by_id(team_id: str, ds_connection, cachestore) -> dict:
+    """
+    This function returns team data for a given team id
+    :param team_id: string team id
+    :param ds_connection: datastore connection
+    :param cachestore: cachestore connection
+    """
+    del cachestore
+    # Fetch teams data from postgres
+    data_query = public_teams.select(Star()).where(
+        public_teams.team_id.eq(team_id),
+    )
+    data_query = data_query.get_sql()
+    team_data = await ds_connection.fetchrow(data_query)
+
+    return dict(team_data)

@@ -71,6 +71,14 @@ class LiveMetrics(BaseModel):
 
 
 class LiveGameInput(BaseModel):
-    team_id: str
-    batting_lineup: List[int]
-    bowling_lineup: List[int]
+    team_id: str = Field(description="Team ID to start the game", min_length=2)
+    batting_lineup: List[int] = Field(
+        description="Batting lineup for your team",
+        min_items=11,
+        max_items=11,
+    )
+    bowling_lineup: List[int] = Field(
+        description="Bowling lineup for your team",
+        min_items=5,
+        max_items=11,
+    )
