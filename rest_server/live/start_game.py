@@ -116,5 +116,6 @@ async def play_game(
     game_results["game_id"] = str(uuid.uuid4())
 
     # add a task to the background handler
-    bg_handler.add_task(game_finished, cache_store, logger)
+    # bg_handler.add_task(game_finished, cache_store, logger)
+    del bg_handler
     return game_results

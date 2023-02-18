@@ -34,5 +34,5 @@ COPY . /src
 WORKDIR /src
 
 CMD ["gunicorn", "--pythonpath", "/src", "--bind", "0.0.0.0:5000",\
-    "--timeout", "0", "--workers", "25", "--threads", "2", "app.main:app", \
+    "--timeout", "0", "--workers", "3", "--threads", "2", "app.main:app", \
     "-k", "uvicorn.workers.UvicornWorker"]

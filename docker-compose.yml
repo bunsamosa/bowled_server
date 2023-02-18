@@ -18,11 +18,7 @@ services:
       - JWT_ALGORITHM
       - JWT_SECRET
       - JWT_AUDIENCE
-      - POSTGRES_HOST
-      - POSTGRES_PORT
-      - POSTGRES_USER
-      - POSTGRES_PASSWORD
-      - POSTGRES_DB
+      - POSTGRES_URL
       - POSTGRES_SCHEMA
     volumes:
       - ./logs:/src/logs
