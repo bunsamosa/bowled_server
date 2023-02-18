@@ -86,8 +86,8 @@ def simulate_game(team1, team2, bowling_team1=None, bowling_team2=None):
         over_ball = current_ball % 6
 
         # bowler and batsman profiles
-        striker = batting_team[striker_index]
-        bowler = bowling_lineup[bowler_index]
+        striker = dict(batting_team[striker_index])
+        bowler = dict(bowling_lineup[bowler_index])
 
         # Fetch batsman and bower probability based on rating out of 10
         bowler_rating = bowler["bowling_rating"] - 1
@@ -96,6 +96,18 @@ def simulate_game(team1, team2, bowling_team1=None, bowling_team2=None):
         batsman_rating = striker["batting_rating"] - 1
         p_batsman = BATSMAN_DISTRIBUTION[batsman_rating]
         p_batsman.append(p_batsman[-1])
+
+        striker = {
+            "player_name": striker["player_name"],
+            "player_id": striker["player_id"],
+            "balls_faced": striker["balls_faced"],
+            "runs": striker["runs"],
+            "out": striker["out"],
+        }
+        bowler = {
+            "player_name": bowler["player_name"],
+            "player_id": bowler["player_id"],
+        }
 
         # generate probability of current outcome
         #   based on batsman and bowler skills
@@ -210,13 +222,21 @@ def simulate_game(team1, team2, bowling_team1=None, bowling_team2=None):
         if current_wickets == 10:
             break
 
+    batting_team_data = {}
+    for player in batting_team:
+        batting_team_data[player["player_id"]] = player
+
+    bowling_team_data = {}
+    for player in bowling_team:
+        bowling_team_data[player["player_id"]] = player
+
     first_innings = {
         "wickets": current_wickets,
         "score": current_score,
         "current_over": print_current_over,
         "current_ball": print_over_ball,
-        "batting_team": batting_team,
-        "bowling_team": bowling_team,
+        "batting_team": batting_team_data,
+        "bowling_team": bowling_team_data,
     }
     target_score = current_score + 1
 
@@ -291,6 +311,18 @@ def simulate_game(team1, team2, bowling_team1=None, bowling_team2=None):
         batsman_rating = striker["batting_rating"] - 1
         p_batsman = BATSMAN_DISTRIBUTION[batsman_rating]
         p_batsman.append(p_batsman[-1])
+
+        striker = {
+            "player_name": striker["player_name"],
+            "player_id": striker["player_id"],
+            "balls_faced": striker["balls_faced"],
+            "runs": striker["runs"],
+            "out": striker["out"],
+        }
+        bowler = {
+            "player_name": bowler["player_name"],
+            "player_id": bowler["player_id"],
+        }
 
         # generate probability of current outcome
         #   based on batsman and bowler skills
@@ -406,13 +438,21 @@ def simulate_game(team1, team2, bowling_team1=None, bowling_team2=None):
         if current_wickets == 10:
             break
 
+    batting_team_data = {}
+    for player in batting_team:
+        batting_team_data[player["player_id"]] = player
+
+    bowling_team_data = {}
+    for player in bowling_team:
+        bowling_team_data[player["player_id"]] = player
+
     second_innings = {
         "wickets": current_wickets,
         "score": current_score,
         "current_over": print_current_over,
         "current_ball": print_over_ball,
-        "batting_team": batting_team,
-        "bowling_team": bowling_team,
+        "batting_team": batting_team_data,
+        "bowling_team": bowling_team_data,
     }
 
     match_commentary.append(
