@@ -15,52 +15,59 @@ BOWLING_TYPES = (
     "Leg Break",
     "Slow Left Arm Orthodox",
 )
-FITNESS_LEVELS = ("Poor", "Decent", "Good", "Superb")
-SKILL_LEVELS = (
-    "Non-existent",
-    "Horrible",
+
+ATTRIBUTE_LEVELS = (
     "Hopeless",
+    "Poor",
+    "Unreliable",
+    "Decent",
+    "Good",
+    "Superb",
+)
+
+SKILL_LEVELS = (
+    "Pathetic",
+    "Horrible",
     "Useless",
     "Mediocre",
     "Average",
     "Reliable",
+    "Talented",
     "Accomplished",
     "Remarkable",
-    "Brilliant",
+    "Proficient",
     "Exemplary",
-    "Prodigious",
     "Fantastic",
-    "Magnificent",
     "Masterful",
-    "Legendary",
     "Supreme",
-    "Magical",
+    "Magnificent",
+    "Phenomenal",
+    "Legendary",
     "Demigod",
+    "Magical",
     "Titan",
 )
 
-PLAYER_FORMS = ("Poor", "Decent", "Good", "Excellent")
-
 SKILL_COLORS = {
-    "1": {"name": "Non-existent", "color": "#D3D0CB"},
+    "1": {"name": "Pathetic", "color": "#D3D0CB"},
     "2": {"name": "Horrible", "color": "#D3D0CB"},
-    "3": {"name": "Hopeless", "color": "#D3D0CB"},
-    "4": {"name": "Useless", "color": "#D3D0CB"},
-    "5": {"name": "Mediocre", "color": "#FFA500"},
-    "6": {"name": "Average", "color": "#FFA500"},
-    "7": {"name": "Reliable", "color": "#FFA500"},
+    "3": {"name": "Useless", "color": "#D3D0CB"},
+    "4": {"name": "Mediocre", "color": "#D3D0CB"},
+    "5": {"name": "Average", "color": "#FFA500"},
+    "6": {"name": "Reliable", "color": "#FFA500"},
+    "7": {"name": "Talented", "color": "#FFA500"},
     "8": {"name": "Accomplished", "color": "#FFA500"},
     "9": {"name": "Remarkable", "color": "#3FA34D"},
-    "10": {"name": "Brilliant", "color": "#3FA34D"},
+    "10": {"name": "Proficient", "color": "#3FA34D"},
     "11": {"name": "Exemplary", "color": "#3FA34D"},
-    "12": {"name": "Prodigious", "color": "#3FA34D"},
-    "13": {"name": "Fantastic", "color": "#52489C"},
-    "14": {"name": "Magnificent", "color": "#52489C"},
-    "15": {"name": "Masterful", "color": "#52489C"},
-    "16": {"name": "Legendary", "color": "#52489C"},
-    "17": {"name": "Supreme", "color": "#FF0000"},
-    "18": {"name": "Magical", "color": "#FF0000"},
-    "19": {"name": "Demigod", "color": "#FF0000"},
+    "12": {"name": "Fantastic", "color": "#3FA34D"},
+    "13": {"name": "Masterful", "color": "#52489C"},
+    "14": {"name": "Supreme", "color": "#52489C"},
+    "15": {"name": "Magnificent", "color": "#52489C"},
+    "16": {"name": "Phenomenal", "color": "#52489C"},
+    "17": {"name": "Legendary", "color": "#FF0000"},
+    "18": {"name": "Demigod", "color": "#FF0000"},
+    "19": {"name": "Magical", "color": "#FF0000"},
     "20": {"name": "Titan", "color": "#FF0000"},
 }
 
@@ -98,11 +105,17 @@ def fill_skill_colors(player):
         "color"
     ]
 
-    index = np.random.choice(np.arange(0, 4), p=[0.1, 0.4, 0.4, 0.1])
-    player["form"] = PLAYER_FORMS[index]
+    index = np.random.choice(
+        np.arange(0, 6),
+        p=[0.05, 0.15, 0.15, 0.4, 0.15, 0.1],
+    )
+    player["form"] = ATTRIBUTE_LEVELS[index]
 
-    index = np.random.choice(np.arange(0, 4), p=[0.1, 0.4, 0.35, 0.15])
-    player["fitness"] = FITNESS_LEVELS[index]
+    index = np.random.choice(
+        np.arange(0, 6),
+        p=[0.05, 0.15, 0.15, 0.4, 0.15, 0.1],
+    )
+    player["fitness"] = ATTRIBUTE_LEVELS[index]
 
     max_dob_ts = 1540660212998
     min_dob_ts = 1492276332458
@@ -134,48 +147,54 @@ def fill_player_skills(player):
     player["fielding_index"] = index
 
     # form
-    index = np.random.choice(np.arange(0, 4), p=[0.1, 0.4, 0.4, 0.1])
-    player["form"] = PLAYER_FORMS[index]
+    index = np.random.choice(
+        np.arange(0, 6),
+        p=[0.05, 0.15, 0.15, 0.4, 0.15, 0.1],
+    )
+    player["form"] = ATTRIBUTE_LEVELS[index]
 
     # fitness
-    index = np.random.choice(np.arange(0, 4), p=[0.1, 0.4, 0.35, 0.15])
-    player["fitness"] = FITNESS_LEVELS[index]
+    index = np.random.choice(
+        np.arange(0, 6),
+        p=[0.05, 0.15, 0.15, 0.4, 0.15, 0.1],
+    )
+    player["fitness"] = ATTRIBUTE_LEVELS[index]
 
     # batting type
-    index = np.random.choice(np.arange(0, 2), p=[0.7, 0.3])
+    index = np.random.choice(np.arange(0, 2), p=[0.65, 0.35])
     player["batting_type"] = BATTING_TYPES[index]
 
     # main skills
     if player_type == "batsman":
-        index = random.randint(4, 9)
+        index = random.randint(9, 19)
         player["batting_seam"] = SKILL_LEVELS[index]
-        player["batting_seam_index"] = index
+        player["batting_seam_index"] = index + 1
 
-        index = random.randint(4, 9)
+        index = random.randint(9, 19)
         player["batting_spin"] = SKILL_LEVELS[index]
-        player["batting_spin_index"] = index
+        player["batting_spin_index"] = index + 1
 
     elif player_type == "wicket-keeper":
-        index = random.randint(4, 9)
+        index = random.randint(9, 19)
         player["wicket_keeping"] = SKILL_LEVELS[index]
-        player["wicket_keeping_index"] = index
+        player["wicket_keeping_index"] = index + 1
 
-        index = random.randint(0, 8)
+        index = random.randint(4, 14)
         player["batting_seam"] = SKILL_LEVELS[index]
-        player["batting_seam_index"] = index
+        player["batting_seam_index"] = index + 1
 
-        index = random.randint(4, 8)
+        index = random.randint(4, 14)
         player["batting_spin"] = SKILL_LEVELS[index]
-        player["batting_spin_index"] = index
+        player["batting_spin_index"] = index + 1
 
     elif player_type == "bowler":
-        index = random.randint(4, 9)
+        index = random.randint(9, 19)
         player["bowling_main"] = SKILL_LEVELS[index]
-        player["bowling_main_index"] = index
+        player["bowling_main_index"] = index + 1
 
-        index = random.randint(4, 9)
+        index = random.randint(4, 14)
         player["bowling_variation"] = SKILL_LEVELS[index]
-        player["bowling_variation_index"] = index
+        player["bowling_variation_index"] = index + 1
 
         index = np.random.choice(
             np.arange(0, 7),
@@ -185,32 +204,32 @@ def fill_player_skills(player):
 
         index = random.randint(0, 4)
         player["batting_seam"] = SKILL_LEVELS[index]
-        player["batting_seam_index"] = index
+        player["batting_seam_index"] = index + 1
 
         index = random.randint(0, 4)
         player["batting_spin"] = SKILL_LEVELS[index]
-        player["batting_spin_index"] = index
+        player["batting_spin_index"] = index + 1
 
     elif player_type == "all-rounder":
         index = random.randint(0, 4)
         player["wicket_keeping"] = SKILL_LEVELS[index]
-        player["wicket_keeping_index"] = index
+        player["wicket_keeping_index"] = index + 1
 
-        index = random.randint(4, 8)
+        index = random.randint(4, 9)
         player["batting_seam"] = SKILL_LEVELS[index]
-        player["batting_seam_index"] = index
+        player["batting_seam_index"] = index + 1
 
-        index = random.randint(4, 8)
+        index = random.randint(4, 9)
         player["batting_spin"] = SKILL_LEVELS[index]
-        player["batting_spin_index"] = index
+        player["batting_spin_index"] = index + 1
 
-        index = random.randint(4, 8)
+        index = random.randint(9, 14)
         player["bowling_main"] = SKILL_LEVELS[index]
-        player["bowling_main_index"] = index
+        player["bowling_main_index"] = index + 1
 
         index = random.randint(4, 8)
         player["bowling_variation"] = SKILL_LEVELS[index]
-        player["bowling_variation_index"] = index
+        player["bowling_variation_index"] = index + 1
 
         index = np.random.choice(
             np.arange(0, 7),
@@ -225,16 +244,16 @@ def fill_player_skills(player):
 
         index = random.randint(0, 3)
         player["bowling_main"] = SKILL_LEVELS[index]
-        player["bowling_main_index"] = index
+        player["bowling_main_index"] = index + 1
 
         index = random.randint(0, 3)
         player["bowling_variation"] = SKILL_LEVELS[index]
-        player["bowling_variation_index"] = index
+        player["bowling_variation_index"] = index + 1
 
     if player_type != "wicket-keeper":
         index = random.randint(0, 5)
         player["wicket_keeping"] = SKILL_LEVELS[index]
-        player["wicket_keeping_index"] = index
+        player["wicket_keeping_index"] = index + 1
 
     # ratings
     player["batting_rating"] = math.ceil(
@@ -249,12 +268,12 @@ def fill_player_skills(player):
 
 def generate_players(names, id_gen=None):
     players = (
-        [{"player_type": "batsman"} for _ in range(5)]
-        + [{"player_type": "wicket-keeper"} for _ in range(2)]
+        [{"player_type": "batsman"} for _ in range(4)]
+        + [{"player_type": "wicket-keeper"} for _ in range(1)]
         + [{"player_type": "all-rounder"} for _ in range(3)]
-        + [{"player_type": "bowler"} for _ in range(5)]
+        + [{"player_type": "bowler"} for _ in range(3)]
     )
-    player_names = random.sample(names, 15)
+    player_names = random.sample(names, 11)
     final_players = {}
 
     for i, player in enumerate(players):
