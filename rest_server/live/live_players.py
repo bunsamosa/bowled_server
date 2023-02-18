@@ -1,21 +1,24 @@
 from typing import List
-from typing import Union
 
 from fastapi import APIRouter
-from fastapi import HTTPException
 from fastapi import Request
 
 from gamelib.team.public_team import get_players_by_team_id
+from rest_server.live.api_models import PublicTeamPlayer
 
 # Create FastAPI router
 router = APIRouter(prefix="/live")
 
 
-@router.get(path="/players", response_model=List, tags=["Live"])
+@router.get(
+    path="/players",
+    response_model=List[PublicTeamPlayer],
+    tags=["Live"],
+)
 async def get_players(
     request: Request,
     team: str,
-) -> Union[List, HTTPException]:
+) -> List[PublicTeamPlayer]:
     """
     This API returns players for a given team
     """

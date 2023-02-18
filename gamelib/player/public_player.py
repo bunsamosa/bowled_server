@@ -23,6 +23,7 @@ async def fill_skill_attribute_labels(
 
     # Fielding
     fielding_index = int(filled_player_data.pop("fielding_index"))
+    filled_player_data["fielding_index"] = fielding_index
     filled_player_data["fielding"] = skill_labels[fielding_index]["label"]
     filled_player_data["fielding_color"] = skill_labels[fielding_index][
         "color"
@@ -30,6 +31,7 @@ async def fill_skill_attribute_labels(
 
     # Wicket keeping
     wicket_keeping_index = int(filled_player_data.pop("wicket_keeping_index"))
+    filled_player_data["wicket_keeping_index"] = wicket_keeping_index
     filled_player_data["wicket_keeping"] = skill_labels[wicket_keeping_index][
         "label"
     ]
@@ -39,6 +41,7 @@ async def fill_skill_attribute_labels(
 
     # Batting seam
     batting_seam_index = int(filled_player_data.pop("batting_seam_index"))
+    filled_player_data["batting_seam_index"] = batting_seam_index
     filled_player_data["batting_seam"] = skill_labels[batting_seam_index][
         "label"
     ]
@@ -48,6 +51,7 @@ async def fill_skill_attribute_labels(
 
     # Batting spin
     batting_spin_index = int(filled_player_data.pop("batting_spin_index"))
+    filled_player_data["batting_spin_index"] = batting_spin_index
     filled_player_data["batting_spin"] = skill_labels[batting_spin_index][
         "label"
     ]
@@ -57,6 +61,7 @@ async def fill_skill_attribute_labels(
 
     # Bowling main
     bowling_main_index = int(filled_player_data.pop("bowling_main_index"))
+    filled_player_data["bowling_main_index"] = bowling_main_index
     filled_player_data["bowling_main"] = skill_labels[bowling_main_index][
         "label"
     ]
@@ -68,6 +73,7 @@ async def fill_skill_attribute_labels(
     bowling_variation_index = int(
         filled_player_data.pop("bowling_variation_index"),
     )
+    filled_player_data["bowling_variation_index"] = bowling_variation_index
     filled_player_data["bowling_variation"] = skill_labels[
         bowling_variation_index
     ]["label"]
@@ -77,10 +83,12 @@ async def fill_skill_attribute_labels(
 
     # Form
     form_index = int(filled_player_data.pop("form_index"))
+    filled_player_data["form_index"] = form_index
     filled_player_data["form"] = attribute_labels[form_index]["label"]
 
     # Fitness
     fitness_index = int(filled_player_data.pop("fitness_index"))
+    filled_player_data["fitness_index"] = fitness_index
     filled_player_data["fitness"] = attribute_labels[fitness_index]["label"]
 
     # Calculate batting rating out of 10
