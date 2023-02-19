@@ -240,23 +240,7 @@ def simulate_game(team1, team2, bowling_team1=None, bowling_team2=None):
     }
     target_score = current_score + 1
 
-    match_commentary.append(
-        {
-            "current_over": print_current_over,
-            "current_ball": print_over_ball,
-            "current_score": current_score,
-            "current_wickets": current_wickets,
-            "outcome": outcome,
-            "outcome_label": outcome_label,
-            "striker": striker,
-            "striker_rating": batsman_rating,
-            "bowler": bowler,
-            "bowler_rating": bowler_rating,
-            "over_score": list(over_score),
-            "innings_over": True,
-            "innings": "First",
-        },
-    )
+    match_commentary[-1]["innings_over"] = True
     print("##################################################################")
     print("Score to win: ", target_score)
     print("##################################################################")
@@ -455,23 +439,7 @@ def simulate_game(team1, team2, bowling_team1=None, bowling_team2=None):
         "bowling_team": bowling_team_data,
     }
 
-    match_commentary.append(
-        {
-            "current_over": print_current_over,
-            "current_ball": print_over_ball,
-            "current_score": current_score,
-            "current_wickets": current_wickets,
-            "outcome": outcome,
-            "outcome_label": outcome_label,
-            "striker": striker,
-            "striker_rating": batsman_rating,
-            "bowler": bowler,
-            "bowler_rating": bowler_rating,
-            "over_score": list(over_score),
-            "innings_over": True,
-            "innings": "Second",
-        },
-    )
+    match_commentary[-1]["innings_over"] = True
     return {
         "first_innings": first_innings,
         "second_innings": second_innings,
