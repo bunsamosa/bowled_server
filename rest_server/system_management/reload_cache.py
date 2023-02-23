@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from fastapi import Request
 from fastapi.responses import Response
 
-from lib.cache_manager import load_skills_attributes
+from gamelib.cache_manager import load_skills_attributes
 
 
 # Create FastAPI router
