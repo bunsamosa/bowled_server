@@ -17,9 +17,8 @@ async def live_game(
     """
     Simulate game API
     """
-    cache_store = request.app.cache_store
-    logger = request.app.logger
-    await logger.info("Fetch game data API")
+    context = request.state.context
+    await context.logger.info("Fetch game data API")
 
-    game_results = cache_store.get_dictionary(key=gameid)
+    game_results = context.cache_store.get_dictionary(key=gameid)
     return game_results

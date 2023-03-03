@@ -43,26 +43,23 @@ async def play_game(
     """
     Simulate game API
     """
-    cache_store = request.app.cache_store
-    data_store = request.app.data_store
-    logger = request.app.logger
-    await logger.info("Simulate game API")
+    context = request.state.context
+    await context.logger.info("Simulate game API")
 
     # TODO: Validate input data
 
     # Fetch team and players data
-    async with data_store.acquire() as connection:
+    async with context.data_store.acquire() as connection:
+        context.ds_connection = connection
         user_team = await get_team_by_id(
             team_id=game_input.team_id,
-            ds_connection=connection,
-            cachestore=cache_store,
+            context=context,
         )
         user_team_name = user_team["team_name"]
 
         user_team_players = await get_players_by_team_id(
             team_id=game_input.team_id,
-            ds_connection=connection,
-            cachestore=cache_store,
+            context=context,
         )
 
     batting_lineup = []
@@ -104,8 +101,8 @@ async def play_game(
         game_results["toss_result"] = toss_string % "BOT Army"
 
     # update game metrics
-    live_metrics = cache_store.get_dictionary("live_metrics")
-    await logger.info("Live game started, updating metrics")
+    live_metrics = context.cache_store.get_dictionary("live_metrics")
+    await context.logger.info("Live game started, updating metrics")
 
     if "games_played" not in live_metrics:
         live_metrics["games_played"] = 0

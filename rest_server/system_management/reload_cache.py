@@ -14,17 +14,13 @@ async def reload_cache(request: Request):
     """
     This API calls the cache manager to reload the cache
     """
-    logger = request.app.logger
-    datastore = request.app.data_store
-    cachestore = request.app.cache_store
-    await logger.info("Reload cache API")
+    context = request.state.context
+    await context.logger.info("Reload cache API")
 
     # Reload cache
-    async with datastore.acquire() as connection:
-        await load_skills_attributes.load_data(
-            ds_connection=connection,
-            cachestore=cachestore,
-        )
-    await logger.info("Cache reloaded successfully")
+    async with context.datastore.acquire() as connection:
+        context.ds_connection = connection
+        await load_skills_attributes.load_data(context=context)
+    await context.logger.info("Cache reloaded successfully")
 
     return Response(status_code=200)

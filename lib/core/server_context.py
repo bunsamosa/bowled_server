@@ -19,6 +19,6 @@ class Context:
 
     logger: structlog.stdlib.AsyncBoundLogger
     request_id: str
-    cachestore: CacheStore
+    cache_store: CacheStore
     data_store: asyncpg.pool.Pool
     ds_connection: asyncpg.pool.PoolAcquireContext = None
