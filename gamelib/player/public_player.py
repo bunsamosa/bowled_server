@@ -1,23 +1,21 @@
 import math
 
+from lib.core.server_context import Context
+
 
 async def fill_skill_attribute_labels(
     player,
-    ds_connection,
-    cachestore,
+    context: Context,
 ) -> dict:
     """
     This function fills skill and attribute labels for a player
     :param player: player data - postgres row or dictionary
-    :param ds_connection: datastore connection
-    :param cachestore: cachestore connection
+    :param context: server context
     :return: player data with skill and attribute labels
     """
-    del ds_connection
-
     # fetch skill and attribute labels
-    skill_labels = cachestore.get_dictionary("skill_labels")
-    attribute_labels = cachestore.get_dictionary("attribute_labels")
+    skill_labels = context.cache_store.get_dictionary("skill_labels")
+    attribute_labels = context.cache_store.get_dictionary("attribute_labels")
 
     filled_player_data = dict(player)
 

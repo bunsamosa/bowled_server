@@ -22,17 +22,15 @@ async def get_players(
     """
     This API returns players for a given team
     """
-    datastore = request.app.data_store
-    cachestore = request.app.cache_store
-    logger = request.app.logger
-    await logger.info("Get players API")
+    context = request.state.context
+    await context.logger.info("Get players API")
 
     # Fetch players data from postgres
-    async with datastore.acquire() as connection:
+    async with context.datastore.acquire() as connection:
+        context.ds_connection = connection
         player_data = await get_players_by_team_id(
             team_id=team,
-            ds_connection=connection,
-            cachestore=cachestore,
+            context=context,
         )
 
     return player_data

@@ -17,12 +17,11 @@ async def get_live_metrics(
     This API returns live metrics such as games live and total games
     :param resetlive: Reset current live games
     """
-    cache_store = request.app.cache_store
-    logger = request.app.logger
-    await logger.info("Get live metrics API")
+    context = request.state.context
+    await context.logger.info("Get live metrics API")
 
     # Read available teams data from redis
-    live_metrics = cache_store.get_dictionary("live_metrics")
+    live_metrics = context.cache_store.get_dictionary("live_metrics")
 
     # reset live games metrics
     if resetlive:
