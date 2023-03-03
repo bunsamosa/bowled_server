@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from app.import_routes import import_routes
-from app.middlewares import log_request
+from app.middlewares import create_context
 from lib.core.cache_store import CacheStore
 from lib.core.data_store import get_connection_pool
 from lib.core.logger import initialize_logger
@@ -25,7 +25,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.add_middleware(BaseHTTPMiddleware, dispatch=log_request)
+# add context middleware
+app.add_middleware(BaseHTTPMiddleware, dispatch=create_context)
 
 
 ###############################################################################
