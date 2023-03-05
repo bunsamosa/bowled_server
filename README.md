@@ -9,6 +9,8 @@ Backend server for [Bowled.gg](https://bowled.gg/)
     - [`main.py`](/app/main.py): FastAPI application entrypoint
     - [`import_routes.py`](/app/import_routes.py): HTTP Endpoint routers
     - [`middleware.py`](/app/middleware.py): Middleware hooks (ex: Logging)
+- `/bowled_match_engine`
+    - This directory is a submodule of the match engine repo (currently private)
 - `/db_scrips`
     - [`create_tables.sql`](/db_scripts/create_tables.sql): SQL script to create tables
     - [`insert_sample_data.sql`](/db_scripts/insert_sample_data.sql): SQL script to insert sample data
