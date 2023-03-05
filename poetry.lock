@@ -68,7 +68,10 @@ python-versions = ">=3.7.2"
 [package.dependencies]
 lazy-object-proxy = ">=1.4.0"
 typing-extensions = {version = ">=3.10", markers = "python_version < \"3.10\""}
-wrapt = {version = ">=1.11,<2", markers = "python_version < \"3.11\""}
+wrapt = [
+    {version = ">=1.11,<2", markers = "python_version < \"3.11\""},
+    {version = ">=1.14,<2", markers = "python_version >= \"3.11\""},
+]
 
 [[package]]
 name = "async-timeout"
@@ -1154,6 +1157,14 @@ optional = false
 python-versions = ">=3.7"
 
 [[package]]
+name = "ujson"
+version = "5.7.0"
+description = "Ultra fast JSON encoder and decoder for Python"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[[package]]
 name = "urllib3"
 version = "1.26.13"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
@@ -1298,8 +1309,8 @@ multidict = ">=4.0"
 
 [metadata]
 lock-version = "1.1"
-python-versions = "3.9.10"
-content-hash = "188a8fc22ef1bf358333d12af6fffab4e53b23f34ecc2736e80dc5a0cd7f7186"
+python-versions = "^3.8.10"
+content-hash = "f6a3ea93f8a6bebeb20d756ec4abad3d49b7ad9a76ffd14b8e306e02284da323"
 
 [metadata.files]
 aiohttp = []
@@ -1610,6 +1621,7 @@ tomlkit = []
 toolz = []
 tqdm = []
 typing-extensions = []
+ujson = []
 urllib3 = []
 uvicorn = []
 uvloop = [
