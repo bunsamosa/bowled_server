@@ -109,7 +109,7 @@ class CacheStore:
         key = f"{self.__namespace}_{key}"
         return self.__client.delete(key)
 
-    def get_dictionary(self, key: str) -> Optional[dict]:
+    def get_dictionary(self, key: str) -> RedisDict:
         """
         Get a dictionary stored in redis
         :param key: Key to get dictionary for
