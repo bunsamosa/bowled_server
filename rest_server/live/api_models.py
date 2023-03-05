@@ -76,9 +76,11 @@ class LiveGameInput(BaseModel):
         description="Batting lineup for your team",
         min_items=11,
         max_items=11,
+        unique_items=True,
     )
     bowling_lineup: List[int] = Field(
         description="Bowling lineup for your team",
         min_items=5,
         max_items=11,
+        unique_items=True,
     )
