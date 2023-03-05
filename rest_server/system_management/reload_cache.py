@@ -18,7 +18,7 @@ async def reload_cache(request: Request):
     await context.logger.info("Reload cache API")
 
     # Reload cache
-    async with context.datastore.acquire() as connection:
+    async with context.data_store.acquire() as connection:
         context.ds_connection = connection
         await load_skills_attributes.load_data(context=context)
     await context.logger.info("Cache reloaded successfully")

@@ -19,7 +19,7 @@ async def get_teams(request: Request) -> List[PublicTeam]:
     await context.logger.info("Get live teams API")
 
     # Fetch teams data from postgres
-    async with context.datastore.acquire() as connection:
+    async with context.data_store.acquire() as connection:
         context.ds_connection = connection
         team_data = await get_all_teams(context=context)
 
