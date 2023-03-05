@@ -26,7 +26,7 @@ async def get_players(
     await context.logger.info("Get players API")
 
     # Fetch players data from postgres
-    async with context.datastore.acquire() as connection:
+    async with context.data_store.acquire() as connection:
         context.ds_connection = connection
         player_data = await get_players_by_team_id(
             team_id=team,

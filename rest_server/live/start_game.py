@@ -101,7 +101,7 @@ async def play_game(
             team_two_bowling=enemy_bowling_lineup,
         )
         game_results["team_name"] = user_team_name
-        game_results["enemy_team"] = enemy_team_name
+        game_results["enemy_team_name"] = enemy_team_name
         game_results["toss_result"] = toss_string % user_team_name
     else:
         game_results = await simulate_game(
@@ -111,7 +111,7 @@ async def play_game(
             team_two_bowling=user_bowling_lineup,
         )
         game_results["team_name"] = enemy_team_name
-        game_results["enemy_team"] = user_team_name
+        game_results["enemy_team_name"] = user_team_name
         game_results["toss_result"] = toss_string % enemy_team_name
 
     # update game metrics
@@ -125,5 +125,10 @@ async def play_game(
     live_metrics["games_played"] += 1
     live_metrics["games_live"] += 1
     game_results["game_id"] = str(uuid.uuid4())
+
+    game_results["user_team"] = player_data
+    game_results["enemy_team"] = {
+        player["player_id"]: player for player in enemy_team_players
+    }
     # print(json.dumps(game_results, indent=4))
     return game_results
