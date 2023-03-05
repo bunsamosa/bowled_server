@@ -104,6 +104,7 @@ async def generate_skill_index(player: Dict) -> Dict:
 
 async def generate_random_players(
     player_names: List,
+    team_id: str,
     number_of_players: int = 11,
 ) -> Dict:
     """
@@ -142,6 +143,7 @@ async def generate_random_players(
         player_id = str(id_start - i)
         player["player_name"] = player_names[i]
         player["player_id"] = player_id
+        player["team_id"] = team_id
         all_players[player_id] = player
 
     return all_players
