@@ -34,13 +34,13 @@ async def generate_skill_index(player: Dict) -> Dict:
 
     # form
     filled_player["form_index"] = np.random.choice(
-        np.arange(0, 6),
+        np.arange(1, 7),
         p=[0.05, 0.15, 0.15, 0.4, 0.15, 0.1],
     )
 
     # fitness
     filled_player["fitness_index"] = np.random.choice(
-        np.arange(0, 6),
+        np.arange(1, 7),
         p=[0.05, 0.15, 0.15, 0.4, 0.15, 0.1],
     )
 

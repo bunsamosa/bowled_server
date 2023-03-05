@@ -1,33 +1,19 @@
-import asyncio
 import random
 import uuid
 from typing import Dict
 from typing import Union
 
 from fastapi import APIRouter
-from fastapi import BackgroundTasks
 from fastapi import HTTPException
 from fastapi import Request
 
+from bowled_match_engine.match_engine.game_simulator import simulate_game
 from gamelib.team.public_team import get_players_by_team_id
 from gamelib.team.public_team import get_team_by_id
-from lib.utils.player_generator import generate_players
-from lib.utils.simulate_game import simulate_game
 from rest_server.live.api_models import LiveGameInput
 
 # Create FastAPI router
 router = APIRouter(prefix="/live")
-
-
-async def game_finished(cache_store, logger):
-    # a game has finished, update metrics
-    finish_time = 600
-    await asyncio.sleep(finish_time)
-
-    live_metrics = cache_store.get_dictionary("live_metrics")
-    if (live_metrics["games_live"]) > 0:
-        live_metrics["games_live"] -= 1
-        await logger.info("Live game finished, updating metrics")
 
 
 @router.post(
@@ -38,7 +24,6 @@ async def game_finished(cache_store, logger):
 async def play_game(
     request: Request,
     game_input: LiveGameInput,
-    bg_handler: BackgroundTasks,
 ) -> Union[Dict, HTTPException]:
     """
     Simulate game API
@@ -47,6 +32,11 @@ async def play_game(
     await context.logger.info("Simulate game API")
 
     # TODO: Validate input data
+    # choose a random enemy team
+    # team_ids = ["ind", "aus", "eng", "pak", "nz", "wi", "sl", "sa"]
+    team_ids = ["ind", "aus", "pak", "sl"]
+    team_ids.remove(game_input.team_id)
+    enemy_team_id = random.choice(team_ids)
 
     # Fetch team and players data
     async with context.data_store.acquire() as connection:
@@ -62,43 +52,67 @@ async def play_game(
             context=context,
         )
 
-    batting_lineup = []
-    bowling_lineup = []
+        enemy_team = await get_team_by_id(
+            team_id=enemy_team_id,
+            context=context,
+        )
+        enemy_team_name = enemy_team["team_name"]
+        enemy_team_players = await get_players_by_team_id(
+            team_id=enemy_team_id,
+            context=context,
+        )
+
+    user_batting_lineup = []
+    user_bowling_lineup = []
 
     player_data = {}
     for player in user_team_players:
         player_data[player["player_id"]] = player
 
     for player_id in game_input.batting_lineup:
-        batting_lineup.append(player_data[player_id])
+        user_batting_lineup.append(player_data[player_id])
 
     for player_id in game_input.bowling_lineup:
-        bowling_lineup.append(player_data[player_id])
+        user_bowling_lineup.append(player_data[player_id])
 
-    # generate bot team to play with
-    bot_players = generate_players(names=request.app.player_names)
+    while len(user_bowling_lineup) < 20:
+        user_bowling_lineup += user_bowling_lineup
+    user_bowling_lineup = user_bowling_lineup[:20]
+
+    # generate batting and bowling lineups for bot team
+    enemy_bowling_lineup = [
+        player
+        for player in enemy_team_players
+        if player["player_type"] in ("bowler", "all-rounder")
+    ]
+
+    while len(enemy_bowling_lineup) < 20:
+        enemy_bowling_lineup += enemy_bowling_lineup
+    enemy_bowling_lineup = enemy_bowling_lineup[:20]
 
     # Toss generate random number and decide who will bat first
     toss_string = "%s won the toss and elected to bat first"
     toss = random.randint(0, 1)
     if toss == 0:
-        game_results = simulate_game(
-            team1=batting_lineup,
-            team2=tuple(bot_players.values()),
-            bowling_team1=bowling_lineup,
+        game_results = await simulate_game(
+            team_one_batting=user_batting_lineup,
+            team_one_bowling=user_bowling_lineup,
+            team_two_batting=enemy_team_players,
+            team_two_bowling=enemy_bowling_lineup,
         )
         game_results["team_name"] = user_team_name
-        game_results["enemy_team"] = "BOT Army"
+        game_results["enemy_team"] = enemy_team_name
         game_results["toss_result"] = toss_string % user_team_name
     else:
-        game_results = simulate_game(
-            team1=tuple(bot_players.values()),
-            team2=batting_lineup,
-            bowling_team2=bowling_lineup,
+        game_results = await simulate_game(
+            team_one_batting=enemy_team_players,
+            team_one_bowling=enemy_bowling_lineup,
+            team_two_batting=user_batting_lineup,
+            team_two_bowling=user_bowling_lineup,
         )
-        game_results["team_name"] = "BOT Army"
+        game_results["team_name"] = enemy_team_name
         game_results["enemy_team"] = user_team_name
-        game_results["toss_result"] = toss_string % "BOT Army"
+        game_results["toss_result"] = toss_string % enemy_team_name
 
     # update game metrics
     live_metrics = context.cache_store.get_dictionary("live_metrics")
@@ -111,8 +125,5 @@ async def play_game(
     live_metrics["games_played"] += 1
     live_metrics["games_live"] += 1
     game_results["game_id"] = str(uuid.uuid4())
-
-    # add a task to the background handler
-    # bg_handler.add_task(game_finished, cache_store, logger)
-    del bg_handler
+    # print(json.dumps(game_results, indent=4))
     return game_results

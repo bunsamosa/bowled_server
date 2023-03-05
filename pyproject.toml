@@ -18,6 +18,7 @@ thirdweb-sdk = "^3.0.0"
 numpy = "^1.23.5"
 asyncpg = "^0.27.0"
 PyPika = "^0.48.9"
+ujson = "^5.7.0"
 
 [tool.poetry.dev-dependencies]
 isort = "^5.10.1"

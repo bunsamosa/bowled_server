@@ -1,5 +1,7 @@
 import math
 
+import numpy as np
+
 from lib.core.server_context import Context
 
 
@@ -79,13 +81,23 @@ async def fill_skill_attribute_labels(
         bowling_variation_index
     ]["color"]
 
-    # Form
-    form_index = int(filled_player_data.pop("form_index"))
+    # form
+    form_index = int(
+        np.random.choice(
+            np.arange(1, 7),
+            p=[0.05, 0.15, 0.15, 0.4, 0.15, 0.1],
+        ),
+    )
     filled_player_data["form_index"] = form_index
     filled_player_data["form"] = attribute_labels[form_index]["label"]
 
     # Fitness
-    fitness_index = int(filled_player_data.pop("fitness_index"))
+    fitness_index = int(
+        np.random.choice(
+            np.arange(1, 7),
+            p=[0.05, 0.15, 0.15, 0.4, 0.15, 0.1],
+        ),
+    )
     filled_player_data["fitness_index"] = fitness_index
     filled_player_data["fitness"] = attribute_labels[fitness_index]["label"]
 

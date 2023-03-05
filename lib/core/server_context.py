@@ -21,4 +21,4 @@ class Context:
     request_id: str
     cache_store: CacheStore
     data_store: asyncpg.pool.Pool
-    ds_connection: asyncpg.pool.PoolAcquireContext = None
+    ds_connection: asyncpg.connection.Connection = None
