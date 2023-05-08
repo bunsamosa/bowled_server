@@ -8,8 +8,8 @@ from fastapi import HTTPException
 from fastapi import Request
 
 from bowled_match_engine.match_engine.game_simulator import simulate_game
-from gamelib.team.public_team import get_players_by_team_id
-from gamelib.team.public_team import get_team_by_id
+from gamelib.team.live_team import get_players_by_team_id
+from gamelib.team.live_team import get_team_by_id
 from rest_server.live.api_models import LiveGameInput
 
 # Create FastAPI router

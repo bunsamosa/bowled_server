@@ -4,19 +4,20 @@ from pydantic import BaseModel
 from pydantic import Field
 
 
-class PublicTeam(BaseModel):
+class LiveTeam(BaseModel):
     """
-    This model represents a public team
+    This model represents a live team
     """
 
     team_id: str = Field(description="Team ID")
     team_logo: str = Field(description="URL to team logo image")
     team_name: str = Field(description="Team name")
+    tags: List[str] = Field(description="Team tags")
 
 
-class PublicTeamPlayer(BaseModel):
+class LiveTeamPlayer(BaseModel):
     """
-    This model represents a public team player
+    This model represents a live team player
     """
 
     player_id: int = Field(description="Player ID")

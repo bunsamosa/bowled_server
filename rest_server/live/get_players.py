@@ -3,8 +3,8 @@ from typing import List
 from fastapi import APIRouter
 from fastapi import Request
 
-from gamelib.team.public_team import get_players_by_team_id
-from rest_server.live.api_models import PublicTeamPlayer
+from gamelib.team.live_team import get_players_by_team_id
+from rest_server.live.api_models import LiveTeamPlayer
 
 # Create FastAPI router
 router = APIRouter(prefix="/live")
@@ -12,13 +12,13 @@ router = APIRouter(prefix="/live")
 
 @router.get(
     path="/players",
-    response_model=List[PublicTeamPlayer],
+    response_model=List[LiveTeamPlayer],
     tags=["Live"],
 )
 async def get_players(
     request: Request,
     team: str,
-) -> List[PublicTeamPlayer]:
+) -> List[LiveTeamPlayer]:
     """
     This API returns players for a given team
     """

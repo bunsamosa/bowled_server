@@ -3,17 +3,17 @@ from typing import List
 from fastapi import APIRouter
 from fastapi import Request
 
-from gamelib.team.public_team import get_all_teams
-from rest_server.live.api_models import PublicTeam
+from gamelib.team.live_team import get_all_teams
+from rest_server.live.api_models import LiveTeam
 
 # Create FastAPI router
 router = APIRouter(prefix="/live")
 
 
-@router.get(path="/teams", response_model=List[PublicTeam], tags=["Live"])
-async def get_teams(request: Request) -> List[PublicTeam]:
+@router.get(path="/teams", response_model=List[LiveTeam], tags=["Live"])
+async def get_teams(request: Request) -> List[LiveTeam]:
     """
-    This API returns a list of public teams
+    This API returns a list of live teams
     """
     context = request.state.context
     await context.logger.info("Get live teams API")
