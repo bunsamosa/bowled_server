@@ -2,9 +2,9 @@ from typing import Tuple
 
 from pypika.terms import Star
 
-from gamelib.data_models import public_team_players
-from gamelib.data_models import public_teams
-from gamelib.player.public_player import fill_skill_attribute_labels
+from gamelib.data_models import live_team_players
+from gamelib.data_models import live_teams
+from gamelib.player.live_player import fill_skill_attribute_labels
 from lib.core.server_context import Context
 
 
@@ -17,8 +17,8 @@ async def get_players_by_team_id(team_id: str, context: Context):
     # Read skill and attribute labels from cachestore
 
     # Fetch players data from postgres
-    data_query = public_team_players.select(Star()).where(
-        public_team_players.team_id.eq(team_id),
+    data_query = live_team_players.select(Star()).where(
+        live_team_players.team_id.eq(team_id),
     )
     data_query = data_query.get_sql()
     player_data = await context.ds_connection.fetch(data_query)
@@ -41,7 +41,7 @@ async def get_all_teams(context: Context) -> Tuple[dict]:
     :param context: server context
     """
     # Fetch teams data from postgres
-    data_query = public_teams.select(Star())
+    data_query = live_teams.select(Star())
     data_query = data_query.get_sql()
     team_data = await context.ds_connection.fetch(data_query)
 
@@ -55,8 +55,8 @@ async def get_team_by_id(team_id: str, context: Context) -> dict:
     :param context: server context
     """
     # Fetch teams data from postgres
-    data_query = public_teams.select(Star()).where(
-        public_teams.team_id.eq(team_id),
+    data_query = live_teams.select(Star()).where(
+        live_teams.team_id.eq(team_id),
     )
     data_query = data_query.get_sql()
     team_data = await context.ds_connection.fetchrow(data_query)

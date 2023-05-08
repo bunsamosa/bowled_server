@@ -12,9 +12,9 @@ POSTGRES_SCHEMA = os.getenv(
 # Postgres tables
 ###############################################################################
 
-# Public Team data
-public_teams = Table("public_teams", schema=POSTGRES_SCHEMA)
-public_team_players = Table("public_team_players", schema=POSTGRES_SCHEMA)
+# Live Team data
+live_teams = Table("live_teams", schema=POSTGRES_SCHEMA)
+live_team_players = Table("live_team_players", schema=POSTGRES_SCHEMA)
 
 
 # Player skills and attributes
