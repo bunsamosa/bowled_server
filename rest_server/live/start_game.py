@@ -33,9 +33,29 @@ async def play_game(
 
     # TODO: Validate input data
     # choose a random enemy team
-    # team_ids = ["ind", "aus", "eng", "pak", "nz", "wi", "sl", "sa"]
-    team_ids = ["ind", "aus", "pak", "sl"]
-    team_ids.remove(game_input.team_id)
+    icc_teams = ["ind", "aus", "eng", "pak", "nz", "wi", "sl", "sa"]
+    ipl_teams = [
+        "csk",
+        "dc",
+        "gt",
+        "kkr",
+        "lsg",
+        "mi",
+        "pbks",
+        "rr",
+        "rcb",
+        "srh",
+    ]
+
+    if game_input.team_id in icc_teams:
+        icc_teams.remove(game_input.team_id)
+        team_ids = icc_teams
+    elif game_input.team_id in ipl_teams:
+        ipl_teams.remove(game_input.team_id)
+        team_ids = ipl_teams
+    else:
+        team_ids = icc_teams + ipl_teams
+
     enemy_team_id = random.choice(team_ids)
 
     # Fetch team and players data
