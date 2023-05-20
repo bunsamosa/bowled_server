@@ -25,6 +25,7 @@ class LiveTeamPlayer(BaseModel):
     player_name: str = Field(description="Player name")
     player_type: str = Field(description="Player type")
     dob: str = Field(description="Date of birth in milliseconds")
+    avatar_url: str = Field(description="URL to player avatar image")
     fitness: str = Field(description="Fitness attribute level")
     form: str = Field(description="Form attribute level")
     batting_type: str = Field(description="Batting type")
