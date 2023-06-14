@@ -21,7 +21,7 @@ RUN apt-get update &&\
     apt-get install -y curl build-essential
 
 # install poetry - respects $POETRY_VERSION & $POETRY_HOME
-RUN curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/install-poetry.py | python -
+RUN curl -sSL https://install.python-poetry.org | python -
 
 # copy project requirement files here to ensure they will be cached.
 WORKDIR $PYSETUP_PATH
