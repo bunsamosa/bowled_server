@@ -4,7 +4,7 @@ from rest_server.live import get_metrics
 from rest_server.live import get_players
 from rest_server.live import get_teams
 from rest_server.live import live_game
-from rest_server.live import start_game
+from rest_server.live_match import start_match
 from rest_server.monitoring import heartbeat
 from rest_server.monitoring import index
 from rest_server.system_management import reload_cache
@@ -31,5 +31,5 @@ def import_routes(app: FastAPI) -> None:
     app.include_router(get_teams.router)
     app.include_router(get_metrics.router)
     app.include_router(live_game.router)
-    app.include_router(start_game.router)
+    app.include_router(start_match.router)
     app.include_router(get_players.router)

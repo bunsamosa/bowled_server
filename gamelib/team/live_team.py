@@ -1,3 +1,4 @@
+from typing import List
 from typing import Tuple
 
 from pypika.terms import Star
@@ -62,3 +63,32 @@ async def get_team_by_id(team_id: str, context: Context) -> dict:
     team_data = await context.ds_connection.fetchrow(data_query)
 
     return dict(team_data)
+
+
+async def validate_team_players(
+    team_id: str,
+    player_ids: List[int],
+    context: Context,
+) -> Tuple[int]:
+    """
+    This function validates if the given player ids belong to the given team
+    :param team_id: string team id
+    :param player_ids: list of player ids
+    :param context: server context
+    """
+    input_players = set(player_ids)
+    input_player_count = len(input_players)
+
+    # Fetch players data from postgres
+    data_query = live_team_players.select(live_team_players.player_id).where(
+        live_team_players.team_id.eq(team_id)
+        & live_team_players.player_id.isin(input_players),
+    )
+    data_query = data_query.get_sql()
+    response_rows = await context.ds_connection.fetch(data_query)
+
+    # Check length of the response and return
+    response_count = len(response_rows)
+    if response_count == input_player_count:
+        return tuple(input_players)
+    return ()
