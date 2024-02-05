@@ -6,7 +6,7 @@ authors = ["madhukar01 <mholla8@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8.10"
-fastapi = "^0.83.0"
+fastapi = "^0.109.1"
 uvicorn = {version = "0.15.0", extras = ["standard"]}
 gunicorn = "^20.1.0"
 pottery = "^3.0.0"
