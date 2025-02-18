@@ -11,7 +11,7 @@ uvicorn = {version = "0.15.0", extras = ["standard"]}
 gunicorn = "^20.1.0"
 pottery = "^3.0.0"
 structlog = "^22.1.0"
-python-jose = "^3.3.0"
+python-jose = "^3.4.0"
 websockets = "9.1"
 numpy = "^1.23.5"
 asyncpg = "^0.27.0"
