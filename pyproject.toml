@@ -5,20 +5,22 @@ description = "Bowled backend server"
 authors = ["madhukar01 <mholla8@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.8.10"
-fastapi = "^0.83.0"
-uvicorn = {version = "0.15.0", extras = ["standard"]}
+python = ">=3.9,<4.0.0"
+fastapi = "^0.111.0"
+uvicorn = {version = "^0.30.1", extras = ["standard"]}
 gunicorn = "^20.1.0"
 pottery = "^3.0.0"
 structlog = "^22.1.0"
 python-jose = "^3.3.0"
-websockets = "9.1"
-numpy = "^1.23.5"
-asyncpg = "^0.27.0"
+websockets = ">=10.4"
+numpy = "^1.26.0"
+asyncpg = "^0.28.0"
 PyPika = "^0.48.9"
 ujson = "^5.7.0"
+pyyaml = "^6.0.1"
+pydantic = "^2.0"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 isort = "^5.10.1"
 pylint = "^2.15.2"
 pre-commit = "^2.20.0"

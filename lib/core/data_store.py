@@ -18,4 +18,4 @@ async def get_connection_pool() -> asyncpg.pool.Pool:
     if not POSTGRES_URL:
         raise ValueError("Invalid POSTGRES_URL")
 
-    return await asyncpg.create_pool(dsn=POSTGRES_URL)
+    return await asyncpg.create_pool(dsn=POSTGRES_URL, statement_cache_size=0)

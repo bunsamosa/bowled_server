@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Set
 
 from pydantic import BaseModel
 from pydantic import Field
@@ -24,7 +24,7 @@ class LiveTeamPlayer(BaseModel):
     team_id: str = Field(description="Team ID")
     player_name: str = Field(description="Player name")
     player_type: str = Field(description="Player type")
-    dob: str = Field(description="Date of birth in milliseconds")
+    dob: int = Field(description="Date of birth in milliseconds")
     avatar_url: str = Field(description="URL to player avatar image")
     fitness: str = Field(description="Fitness attribute level")
     form: str = Field(description="Form attribute level")
@@ -74,15 +74,9 @@ class LiveMetrics(BaseModel):
 
 class LiveGameInput(BaseModel):
     team_id: str = Field(description="Team ID to start the game", min_length=2)
-    batting_lineup: List[int] = Field(
+    batting_lineup: Set[int] = Field(
         description="Batting lineup for your team",
-        min_items=11,
-        max_items=11,
-        unique_items=True,
     )
-    bowling_lineup: List[int] = Field(
+    bowling_lineup: Set[int] = Field(
         description="Bowling lineup for your team",
-        min_items=5,
-        max_items=11,
-        unique_items=True,
     )

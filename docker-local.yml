@@ -7,4 +7,5 @@ services:
     restart: unless-stopped
     volumes:
       - ./deployment/volumes/redis:/data
-    network_mode: host
+    ports:
+      - 6379:6379
