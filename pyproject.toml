@@ -19,6 +19,10 @@ PyPika = "^0.48.9"
 ujson = "^5.7.0"
 pyyaml = "^6.0.1"
 pydantic = "^2.0"
+sse-starlette = "^1.6.5"
+pytest = "^8.3.5"
+pytest-asyncio = "^0.26.0"
+httpx = "^0.28.1"
 
 [tool.poetry.group.dev.dependencies]
 isort = "^5.10.1"
@@ -30,6 +34,10 @@ doppler-env = "^0.3.0"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+pythonpath = "."
+addopts = ["--import-mode=importlib"]
 
 [tool.black]
 line-length = 79

@@ -85,7 +85,8 @@ class CacheStore:
 
         key = key.strip()
         value = value.strip()
-        if not key or not value or not 0 < expire < 86400:
+        # Allow expire time up to and including 86400 (1 day)
+        if not key or not value or not 0 < expire <= 86400:
             raise ValueError("Invalid parameter")
 
         # Attach namespace to key
@@ -141,3 +142,8 @@ class CacheStore:
         # Attach namespace to key
         key = f"{self.__namespace}_{key}"
         return NextId(key=key, masters={self.__client})
+
+    @property
+    def client(self) -> redis.Redis:
+        """Provides access to the underlying Redis client."""
+        return self.__client
