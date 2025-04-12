@@ -147,14 +147,16 @@ async def start_new_match(
     team1_name = "Team 1" # Default
     team2_name = "Team 2" # Default
     try:
-        team1_details = await get_team_by_id(match_input.team1_id, context)
-        if team1_details and team1_details.get("team_name"):
-            team1_name = team1_details["team_name"]
+        async with context.data_store.acquire() as conn:
+            context.ds_connection = conn
+            team1_details = await get_team_by_id(team_id=match_input.team1_id, context=context)
+            if team1_details and team1_details.get("team_name"):
+                team1_name = team1_details["team_name"]
 
-        team2_details = await get_team_by_id(match_input.team2_id, context)
-        if team2_details and team2_details.get("team_name"):
-            team2_name = team2_details["team_name"]
-        await logger.info("Fetched team names", team1=team1_name, team2=team2_name)
+            team2_details = await get_team_by_id(team_id=match_input.team2_id, context=context)
+            if team2_details and team2_details.get("team_name"):
+                team2_name = team2_details["team_name"]
+            await logger.info("Fetched team names", team1=team1_name, team2=team2_name)
     except Exception as e:
         await logger.warn("Could not fetch team names, using defaults.", exc_info=e)
 

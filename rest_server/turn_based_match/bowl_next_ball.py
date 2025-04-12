@@ -314,14 +314,30 @@ async def bowl_next_ball_endpoint(
         is_innings_finished = True
         await logger.info("Innings finished: All wickets down", match_id=match_id)
 
-    # Check if over is finished (legal balls >= 6)
-    is_over_finished = (
+    # Check if over is finished directly in the if condition
+    # REMOVED: Pre-calculation of is_over_finished
+    # is_over_finished = (
+    #    game_state.current_ball_in_over >= 6 and
+    #    game_state.status != GameStatus.REQUIRES_BATSMAN and
+    #    game_state.status != GameStatus.ERROR
+    # )
+
+    # Add logging before the check
+    await logger.info(
+        "Pre-check is_over_finished",
+        current_ball_in_over=game_state.current_ball_in_over,
+        current_status=game_state.status,
+        check_condition=(game_state.current_ball_in_over >= 6 and game_state.status != GameStatus.REQUIRES_BATSMAN and game_state.status != GameStatus.ERROR),
+        match_id=match_id
+    )
+
+    # Use the condition directly in the if statement
+    if (
         game_state.current_ball_in_over >= 6 and
         game_state.status != GameStatus.REQUIRES_BATSMAN and
         game_state.status != GameStatus.ERROR
-    )
-
-    if is_over_finished:
+    ):
+        await logger.info("Inside is_over_finished block", match_id=match_id, over=game_state.current_over)
         current_over_summary = game_state.over_summaries[-1]
         if current_over_summary.runs_conceded == 0 and current_over_summary.wickets_taken == 0:
             # Only add maiden if no runs AND no wickets conceded in the over
@@ -455,7 +471,7 @@ async def bowl_next_ball_endpoint(
     if save_success:
         try:
             # Add a small delay before publishing to allow cache write to settle
-            await asyncio.sleep(0.2) # Delay for 200 milliseconds
+            # await asyncio.sleep(0.2) # REMOVED: Delay for 200 milliseconds
 
             await publish_state_update(context, match_id)
             await logger.info("Game state update published successfully after save block", match_id=match_id)
