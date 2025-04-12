@@ -1,4 +1,5 @@
 from typing import Any
+import asyncio
 
 from fastapi import APIRouter, Request, HTTPException, status
 import structlog
@@ -39,6 +40,8 @@ async def _update_game_state_after_ball(
 
     NOTE: This function is now async to allow awaiting logger calls.
     """
+    # Use INFO level for debugging visibility
+    await logger.info("Entering _update_game_state_after_ball", match_id=game_state.match_id, outcome=outcome_str)
     batsman_id = game_state.batsman_on_strike_id
     bowler_id = game_state.current_bowler_id
 
@@ -48,6 +51,7 @@ async def _update_game_state_after_ball(
         )
         game_state.status = GameStatus.ERROR
         game_state.error_message = "Internal state error: Missing player IDs."
+        await logger.info("Exiting _update_game_state_after_ball (ERROR)", match_id=game_state.match_id)
         return game_state
 
     # Get current player scorecards (or initialize if somehow missing)
@@ -62,6 +66,8 @@ async def _update_game_state_after_ball(
     batsman_scorecard = game_state.player_scorecards[batsman_id]
     bowler_scorecard = game_state.player_scorecards[bowler_id]
 
+    await logger.info("Got player scorecards", match_id=game_state.match_id)
+
     # Create/Get current OverSummary
     is_first_ball_of_over = game_state.current_ball_in_over == 0
     if is_first_ball_of_over:
@@ -73,6 +79,7 @@ async def _update_game_state_after_ball(
         game_state.over_summaries.append(current_over_summary)
     else:
         current_over_summary = game_state.over_summaries[-1]
+    await logger.info("Got OverSummary", match_id=game_state.match_id)
 
     runs_this_ball = 0
     extras_this_ball = 0
@@ -88,8 +95,10 @@ async def _update_game_state_after_ball(
         game_state.total_balls_bowled += 1
         batsman_scorecard.batting.balls_faced += 1
         bowler_scorecard.bowling.balls_bowled += 1
+        await logger.info("Processed legal delivery increments", match_id=game_state.match_id)
 
     # Update Score and player stats based on descriptive outcome_str
+    await logger.info("Starting score/stat update", match_id=game_state.match_id)
     if outcome_str == "dot":
         pass # No runs
     elif outcome_str == "single":
@@ -143,7 +152,7 @@ async def _update_game_state_after_ball(
         game_state.batsman_on_strike_id = None
         if game_state.wickets < MAX_WICKETS:
             game_state.status = GameStatus.REQUIRES_BATSMAN
-            await logger.debug(
+            await logger.info(
                 "Wicket fell, requires new batsman", match_id=game_state.match_id
             )
     else:
@@ -153,8 +162,10 @@ async def _update_game_state_after_ball(
     # Update bowler overs_bowled
     b_balls = bowler_scorecard.bowling.balls_bowled
     bowler_scorecard.bowling.overs_bowled = round(b_balls // 6 + (b_balls % 6) / 10, 1)
+    await logger.info("Updated bowler overs_bowled", match_id=game_state.match_id)
 
     # Create BallData
+    await logger.info("Preparing BallData", match_id=game_state.match_id)
     ball_data = BallData(
         innings=game_state.current_innings,
         over=game_state.current_over,
@@ -175,8 +186,10 @@ async def _update_game_state_after_ball(
     current_over_summary.runs_conceded += (runs_this_ball + extras_this_ball)
     if wicket_this_ball:
         current_over_summary.wickets_taken += 1
+    await logger.info("Appended BallData to OverSummary", match_id=game_state.match_id)
 
     # Handle Batsman Swap
+    await logger.info("Checking batsman swap", match_id=game_state.match_id)
     if (
         is_legal_delivery and
         not wicket_this_ball and
@@ -189,8 +202,9 @@ async def _update_game_state_after_ball(
             game_state.batsman_off_strike_id,
             game_state.batsman_on_strike_id,
         )
-        await logger.debug("Batsmen swapped ends", match_id=game_state.match_id)
+        await logger.info("Batsmen swapped ends", match_id=game_state.match_id)
 
+    await logger.info("Exiting _update_game_state_after_ball (Success)", match_id=game_state.match_id)
     return game_state
 
 
@@ -249,14 +263,12 @@ async def bowl_next_ball_endpoint(
             p for p in squad_players if str(p["player_id"]) == bowler_id
         ), None)
         if not batsman_data or not bowler_data:
-             raise HTTPException(
-                 status_code=500,
-                 detail="Internal state error: Player data missing."
-             )
+            raise HTTPException(
+                status_code=500,
+                detail="Internal state error: Player data missing."
+            )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error preparing simulation: {e}")
-
-    await logger.debug("Player data retrieved for simulation", match_id=match_id)
 
     # --- 4. Simulate the Ball --- #
     try:
@@ -275,20 +287,19 @@ async def bowl_next_ball_endpoint(
         # Store string outcome and commentary in game state
         game_state.commentary = commentary
         game_state.last_ball_outcome = ball_outcome_str # Store the string
-
-        await logger.info("Ball simulated", match_id=match_id, outcome=ball_outcome_str)
+        await asyncio.sleep(0.2) # Keep the sleep just in case
     except Exception as e:
+        await logger.error("Caught exception during ball simulation block", match_id=match_id, error=str(e), exc_info=True)
         await logger.exception(
             "Error during ball simulation", match_id=match_id, exc_info=e
         )
-        raise HTTPException(status_code=500, detail="Match engine simulation failed.")
 
     # --- 5. Update Game State using Helper Function --- #
     try:
         # Call the helper function (now async, so await is needed)
         game_state = await _update_game_state_after_ball(game_state, ball_outcome_str)
         if game_state.status == GameStatus.ERROR:
-             raise HTTPException(status_code=500, detail=game_state.error_message or "Error updating game state.")
+            raise HTTPException(status_code=500, detail=game_state.error_message or "Error updating game state.")
     except Exception as e:
         await logger.exception("Error updating game state after ball", match_id=match_id, ball_outcome=ball_outcome_str, exc_info=e)
         game_state.status = GameStatus.ERROR
@@ -296,6 +307,7 @@ async def bowl_next_ball_endpoint(
         raise HTTPException(status_code=500, detail="Failed to update game state after ball simulation.")
 
     # --- 6. Check and Handle End of Over / Innings --- #
+    await logger.info("Starting end-of-over/innings checks", match_id=match_id)
     is_innings_finished = False
     # Check wickets first
     if game_state.status != GameStatus.ERROR and game_state.wickets >= MAX_WICKETS:
@@ -310,29 +322,20 @@ async def bowl_next_ball_endpoint(
     )
 
     if is_over_finished:
-        await logger.debug("Over finished", match_id=match_id, over=game_state.current_over)
         current_over_summary = game_state.over_summaries[-1]
         if current_over_summary.runs_conceded == 0 and current_over_summary.wickets_taken == 0:
             # Only add maiden if no runs AND no wickets conceded in the over
             bowler_scorecard = game_state.player_scorecards.get(game_state.current_bowler_id)
             if bowler_scorecard:
-                 bowler_scorecard.bowling.maidens += 1
-                 await logger.info("Maiden over bowled", match_id=match_id, bowler=game_state.current_bowler_id)
+                bowler_scorecard.bowling.maidens += 1
+                await logger.info("Maiden over bowled", match_id=match_id, bowler=game_state.current_bowler_id)
         (game_state.batsman_on_strike_id, game_state.batsman_off_strike_id) = (
             game_state.batsman_off_strike_id, game_state.batsman_on_strike_id
         )
-        await logger.debug("Batsmen swapped for new over", match_id=match_id)
+        await logger.info("Batsmen swapped for new over", match_id=match_id)
         game_state.current_over += 1
         game_state.current_ball_in_over = 0
 
-        # Check if innings ended due to overs completed
-        # Use total_overs stored in game state
-        await logger.debug(
-            "Checking innings completion due to overs",
-            match_id=game_state.match_id,
-            current_over=game_state.current_over,
-            total_overs=game_state.total_overs,
-        )
         if game_state.current_over >= game_state.total_overs:
             is_innings_finished = True
             await logger.info(
@@ -345,26 +348,27 @@ async def bowl_next_ball_endpoint(
             game_state.previous_over_bowler_id = game_state.current_bowler_id
             game_state.current_bowler_id = None
             game_state.status = GameStatus.REQUIRES_BOWLER
-            await logger.debug(
+            await logger.info(
                 "Over ended, status set to REQUIRES_BOWLER",
                 match_id=game_state.match_id,
                 status=game_state.status
             )
         else:  # Should not happen if logic is correct, but log if it does
-             await logger.warn(
+            await logger.warn(
                 "Unexpected state after over completion check",
                 is_innings_finished=is_innings_finished,
                 match_id=game_state.match_id
-             )
+            )
 
     # --- Handle Innings Completion ---
-    await logger.debug(
+    await logger.info(
         "Checking if innings is finished",
         match_id=match_id,
         is_innings_finished=is_innings_finished,
         current_status=game_state.status
     )
     if is_innings_finished:
+        await logger.info("Inside is_innings_finished block", match_id=match_id, current_innings=game_state.current_innings)
         if game_state.current_innings == 1:
             await logger.info(
                 "Innings 1 complete. Setting status to INNINGS_BREAK.",
@@ -374,7 +378,7 @@ async def bowl_next_ball_endpoint(
             game_state.status = GameStatus.INNINGS_BREAK
             game_state.target = game_state.score + 1
             # Removed state reset logic from here
-            await logger.debug("Innings 1 finished, status set to INNINGS_BREAK", status=game_state.status, match_id=match_id)
+            await logger.info("Innings 1 finished, status set to INNINGS_BREAK", status=game_state.status, match_id=match_id)
 
         elif game_state.current_innings == 2:
             await logger.info(
@@ -384,7 +388,7 @@ async def bowl_next_ball_endpoint(
             game_state.status = GameStatus.COMPLETED
 
     # Check for win condition in 2nd innings
-    await logger.debug(
+    await logger.info(
         "Checking win condition (2nd Innings)",
         match_id=match_id,
         current_status=game_state.status,
@@ -403,8 +407,9 @@ async def bowl_next_ball_endpoint(
         game_state.status = GameStatus.COMPLETED
         is_innings_finished = True  # Mark innings finished here too
 
+    await logger.info("Finished end-of-over/innings checks", match_id=match_id, final_status_before_save=game_state.status)
     # --- 7. Save and Publish Updated State --- #
-    await logger.debug(
+    await logger.info(
         "Final state before save",
         status=game_state.status,
         current_over=game_state.current_over,
@@ -416,14 +421,27 @@ async def bowl_next_ball_endpoint(
     save_success = False
     loaded_state_after_save = None  # For debugging
     try:
+        # === DETAILED LOGGING BEFORE SAVE ===
+        await logger.info(
+            "State PREPARED for save",
+            status=game_state.status,
+            current_over=game_state.current_over,
+            current_ball=game_state.current_ball_in_over,
+            total_balls=game_state.total_balls_bowled,
+            score=game_state.score,
+            wickets=game_state.wickets,
+            target=game_state.target,
+            match_id=match_id
+        )
+        # === END LOGGING ===
         save_success = await save_game_state(context, match_id, game_state)
-        await logger.debug("save_game_state function returned", success=save_success, match_id=match_id)
+        await logger.info("save_game_state function returned", success=save_success, match_id=match_id)
 
         # === DEBUG: Immediately load state after save ===
         if save_success:
             loaded_state_after_save = await load_game_state(context, match_id)
             if loaded_state_after_save:
-                await logger.debug("State loaded IMMEDIATELY after save", status=loaded_state_after_save.status, match_id=match_id)
+                await logger.info("State loaded IMMEDIATELY after save", status=loaded_state_after_save.status, match_id=match_id)
             else:
                 await logger.warn("Failed to load state immediately after successful save", match_id=match_id)
         # === END DEBUG ===
@@ -436,14 +454,17 @@ async def bowl_next_ball_endpoint(
     # Publish state update AFTER the save attempt (if successful)
     if save_success:
         try:
+            # Add a small delay before publishing to allow cache write to settle
+            await asyncio.sleep(0.2) # Delay for 200 milliseconds
+
             await publish_state_update(context, match_id)
-            await logger.debug("Game state update published successfully after save block", match_id=match_id)
+            await logger.info("Game state update published successfully after save block", match_id=match_id)
         except Exception as e:
-             await logger.exception("Failed to publish game state update separately", match_id=match_id, exc_info=e)
-             # Log publish error, but likely continue to return response
+            await logger.exception("Failed to publish game state update separately", match_id=match_id, exc_info=e)
+            # Log publish error, but likely continue to return response
 
     # --- 8. Prepare and Return Response --- #
-    await logger.debug("State being returned in response", status=game_state.status)
+    await logger.info("State being returned in response", status=game_state.status)
     response = BowlResultOutput(
         ball_outcome=game_state.last_ball_outcome, # Use the stored string outcome
         updated_game_state=game_state

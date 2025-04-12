@@ -45,8 +45,6 @@ async def save_game_state(context: Any, match_id: str, state: GameState) -> bool
         state_key = _get_state_key(match_id)
         # Serialize Pydantic model to JSON string using Pydantic v2 method
         state_json = state.model_dump_json()
-        # Log the JSON being saved
-        await logger.debug("JSON being saved to cache", match_id=match_id, json_data=state_json)
 
         # Use set_key which handles namespacing and expiry
         # CacheStore.set_key expects a string value.
@@ -85,8 +83,6 @@ async def load_game_state(context: Any, match_id: str) -> Optional[GameState]:
         state_key = _get_state_key(match_id)
 
         state_json = cache_store.get_key(key=state_key)
-        # Log the raw data retrieved from cache (before decoding/parsing)
-        await logger.debug("Raw data loaded from cache", match_id=match_id, raw_data=state_json)
 
         if state_json is None:
             await logger.warn(
@@ -99,7 +95,7 @@ async def load_game_state(context: Any, match_id: str) -> Optional[GameState]:
             state_json = state_json.decode('utf-8')
 
         # Parse JSON string back into Pydantic model
-        state = GameState.parse_raw(state_json)
+        state = GameState.model_validate_json(state_json)
         return state
     except (ValidationError, json.JSONDecodeError) as e:
         await logger.exception(

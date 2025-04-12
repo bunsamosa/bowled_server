@@ -70,6 +70,7 @@ class GameStatus(str, Enum):
     COMPLETED = "completed"
     ERROR = "error"
 
+
 class GameState(BaseModel):
     """Represents the complete state of a turn-based match.
     Stored in cache (Redis) between turns.
@@ -78,7 +79,9 @@ class GameState(BaseModel):
     status: GameStatus
     team1_id: str
     team2_id: str
-    team1_squad: List[Dict]  # Using Dict as player data structure is handled elsewhere
+    team1_name: str
+    team2_name: str
+    team1_squad: List[Dict]
     team2_squad: List[Dict]
     total_overs: int
     current_innings: int = 1
@@ -98,7 +101,7 @@ class GameState(BaseModel):
     batsman_on_strike_id: Optional[str] = None
     batsman_off_strike_id: Optional[str] = None
     current_bowler_id: Optional[str] = None
-    previous_over_bowler_id: Optional[str] = None # Added to track previous bowler
+    previous_over_bowler_id: Optional[str] = None
 
     # Lists of player IDs available for selection
     available_batsman_ids: List[str] = Field(default_factory=list)

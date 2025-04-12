@@ -15,6 +15,8 @@ from .api_models import StartMatchInput
 # Helper functions
 # Assume get_players_by_team_id is correctly imported
 from gamelib.team.live_team import get_players_by_team_id
+# Assume a similar helper exists for team details
+from gamelib.team.live_team import get_team_by_id
 
 # Initialize logger
 logger = structlog.get_logger(__name__)
@@ -141,6 +143,21 @@ async def start_new_match(
             # Ensure connection attribute is removed from context after use
             context.ds_connection = None
 
+    # --- 2. Fetch Team Names (New Step) ---
+    team1_name = "Team 1" # Default
+    team2_name = "Team 2" # Default
+    try:
+        team1_details = await get_team_by_id(match_input.team1_id, context)
+        if team1_details and team1_details.get("team_name"):
+            team1_name = team1_details["team_name"]
+
+        team2_details = await get_team_by_id(match_input.team2_id, context)
+        if team2_details and team2_details.get("team_name"):
+            team2_name = team2_details["team_name"]
+        await logger.info("Fetched team names", team1=team1_name, team2=team2_name)
+    except Exception as e:
+        await logger.warn("Could not fetch team names, using defaults.", exc_info=e)
+
     # --- 3. Perform Toss ---
     toss_winner_team_id = random.choice([
         match_input.team1_id,
@@ -175,6 +192,8 @@ async def start_new_match(
         status=GameStatus.REQUIRES_OPENERS,
         team1_id=match_input.team1_id,
         team2_id=match_input.team2_id,
+        team1_name=team1_name, # Assign fetched/default name
+        team2_name=team2_name, # Assign fetched/default name
         team1_squad=team1_squad_data,  # Store fetched player data
         team2_squad=team2_squad_data,
         total_overs=match_input.overs, # Store the number of overs
